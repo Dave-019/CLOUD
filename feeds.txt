@@ -761,7 +761,6 @@ https://dulltooldimbulb.blogspot.com/atom.xml
 https://dotnetperls.com/rss.xml
 https://ellyloel.com/feed.atom
 https://drstanfield.com/blogs/articles.atom
-https://dylan.gr/feed
 https://doomandgloomfromthetomb.tumblr.com/rss
 https://driventowrite.com/feed
 https://duncan.co/feed/atom
@@ -785,7 +784,6 @@ https://donherron.com/feed
 https://donthave2sting.bearblog.dev/atom.xml
 https://domainincite.com/feed
 https://dnitza.com/feeds/rss
-https://dove.town/rss.xml
 https://djmash.at/feed
 https://douglasireland.com/feed
 https://dongknows.com/feed/atom
@@ -1030,7 +1028,6 @@ https://fedi.aeracode.org/@andrew.rss
 https://fedi.vale.rocks/users/vale/feed.atom
 https://eric.jain.name/atom.xml
 https://feeds.blubrry.com/feeds/1469494.xml
-https://fedi.simonwillison.net/@simon.rss
 https://feeds.feedburner.com/brainpickings/rss
 https://feedpress.me/pxlnv
 https://feeds.feedburner.com/LondonRemembers

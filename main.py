@@ -24,20 +24,25 @@ FEEDS_FILE = Path("feeds.txt")
 INDEX_TMPL = Path("index.template.html")
 POST_TMPL = Path("post.template.html")
 STYLES_FILE = Path("styles.css")
+STORE_FILE = Path("posts_store.json")
 
 RELEVANT_DAYS = 2
-TIMEOUT_SECS = 30
-MAX_CONCURRENT = 40
-SCRAPE_CONCURRENT = 10
+TIMEOUT_SECS = 25
+MAX_FEED_CONCURRENT = 15
+MAX_SCRAPE_CONCURRENT = 4
+MAX_RETRIES = 2
 EAT = ZoneInfo("Africa/Nairobi")
 
+USER_AGENT = "RectifierBot/1.0 (+https://pages.dev)"
+
+# Exact host matches only
 BLOCKLIST = {
     "www.metafilter.com",
     "twitter.com",
     "x.com",
+    # Add exact hosts here:
+    # "www.mothersalwaysright.com",
 }
-
-USER_AGENT = "FeedAggregator/1.0 (+https://example.com)"
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 
@@ -84,7 +89,97 @@ def load_feeds() -> list[str]:
             if line.strip() and not line.startswith("#")
         ]
 
-# ── Fetching ──────────────────────────────────────────────────────────────────
+def parse_host(url: str) -> str:
+    try:
+        return urlparse(url).netloc
+    except Exception:
+        return ""
+
+def is_blocked_host(host: str) -> bool:
+    return host in BLOCKLIST
+
+def parse_entry_date(entry) -> datetime | None:
+    for field in ["published_parsed", "updated_parsed"]:
+        val = getattr(entry, field, None)
+        if val:
+            try:
+                return datetime(*val[:6], tzinfo=timezone.utc)
+            except Exception:
+                continue
+    return None
+
+# ── Persistent Store ──────────────────────────────────────────────────────────
+
+def load_store() -> list[dict]:
+    if not STORE_FILE.exists():
+        return []
+    try:
+        with open(STORE_FILE, encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, list):
+            return data
+        return []
+    except Exception:
+        logging.warning("Could not load posts_store.json, starting fresh")
+        return []
+
+def save_store(posts: list[dict]):
+    with open(STORE_FILE, "w", encoding="utf-8") as f:
+        json.dump(posts, f, indent=2, ensure_ascii=False)
+
+def prune_store(posts: list[dict]) -> list[dict]:
+    cutoff = datetime.now(timezone.utc) - timedelta(days=RELEVANT_DAYS)
+    pruned = []
+    for post in posts:
+        try:
+            pub = datetime.fromisoformat(post["published"])
+            if pub.tzinfo is None:
+                pub = pub.replace(tzinfo=timezone.utc)
+            if pub > cutoff:
+                pruned.append(post)
+        except Exception:
+            continue
+    return pruned
+
+def merge_posts(old_posts: list[dict], new_posts: list[dict]) -> list[dict]:
+    merged = {}
+
+    for post in old_posts:
+        link = post.get("link")
+        if link:
+            merged[link] = post
+
+    for post in new_posts:
+        link = post.get("link")
+        if not link:
+            continue
+
+        existing = merged.get(link)
+        if not existing:
+            merged[link] = post
+            continue
+
+        old_content = existing.get("content", "")
+        new_content = post.get("content", "")
+
+        if len(strip_html(new_content)) > len(strip_html(old_content)):
+            merged[link] = post
+        else:
+            # Keep the better content, but refresh metadata if needed
+            updated = existing.copy()
+            updated["title"] = post.get("title") or existing.get("title")
+            updated["published"] = post.get("published") or existing.get("published")
+            updated["host"] = post.get("host") or existing.get("host")
+            updated["filename"] = post.get("filename") or existing.get("filename")
+            updated["feed_url"] = post.get("feed_url") or existing.get("feed_url")
+            merged[link] = updated
+
+    posts = list(merged.values())
+    posts = prune_store(posts)
+    posts.sort(key=lambda p: p["published"], reverse=True)
+    return posts
+
+# ── HTTP ──────────────────────────────────────────────────────────────────────
 
 async def fetch_text(
     session: aiohttp.ClientSession,
@@ -92,27 +187,61 @@ async def fetch_text(
     timeout_secs: int = TIMEOUT_SECS,
 ) -> tuple[int, str, str]:
     headers = {"User-Agent": USER_AGENT}
-    try:
-        async with session.get(
-            url,
-            headers=headers,
-            timeout=aiohttp.ClientTimeout(total=timeout_secs),
-        ) as response:
-            text = await response.text(errors="ignore")
-            content_type = response.headers.get("content-type", "")
-            return response.status, text, content_type
-    except asyncio.TimeoutError:
-        logging.warning(f"Timeout: {url}")
-        return 0, "", ""
-    except Exception as e:
-        logging.warning(f"Fetch failed {url}: {e}")
-        return 0, "", ""
+
+    for attempt in range(MAX_RETRIES + 1):
+        try:
+            async with session.get(
+                url,
+                headers=headers,
+                timeout=aiohttp.ClientTimeout(total=timeout_secs),
+            ) as response:
+                text = await response.text(errors="ignore")
+                content_type = response.headers.get("content-type", "")
+                return response.status, text, content_type
+
+        except asyncio.TimeoutError:
+            if attempt < MAX_RETRIES:
+                await asyncio.sleep(1 + attempt)
+                continue
+            logging.warning(f"Timeout: {url}")
+            return 0, "", ""
+
+        except Exception as e:
+            if attempt < MAX_RETRIES:
+                await asyncio.sleep(1 + attempt)
+                continue
+            logging.warning(f"Fetch failed {url}: {e}")
+            return 0, "", ""
+
+    return 0, "", ""
+
+# ── Content Extraction ────────────────────────────────────────────────────────
+
+def extract_entry_content(entry) -> str:
+    for field in ["content", "summary"]:
+        val = getattr(entry, field, None)
+        if not val:
+            continue
+
+        if isinstance(val, list):
+            value = val[0].get("value", "")
+        else:
+            value = str(val)
+
+        if value:
+            return value
+
+    return ""
 
 async def fetch_article_content(
     session: aiohttp.ClientSession,
     url: str,
     semaphore: asyncio.Semaphore,
 ) -> str:
+    host = parse_host(url)
+    if not host or is_blocked_host(host):
+        return ""
+
     async with semaphore:
         status, html, content_type = await fetch_text(session, url)
         if status != 200:
@@ -125,36 +254,12 @@ async def fetch_article_content(
             content = doc.summary()
             if not content:
                 return ""
-            text = strip_html(content)
-            if len(text) < 200:
+            if len(strip_html(content)) < 200:
                 return ""
             return content
         except Exception as e:
             logging.info(f"Could not parse article {url}: {e}")
             return ""
-
-def extract_entry_content(entry) -> str:
-    for field in ["content", "summary"]:
-        val = getattr(entry, field, None)
-        if not val:
-            continue
-        if isinstance(val, list):
-            value = val[0].get("value", "")
-        else:
-            value = str(val)
-        if value and len(strip_html(value)) >= 200:
-            return value
-    return ""
-
-def parse_entry_date(entry) -> datetime:
-    for field in ["published_parsed", "updated_parsed"]:
-        val = getattr(entry, field, None)
-        if val:
-            try:
-                return datetime(*val[:6], tzinfo=timezone.utc)
-            except Exception:
-                pass
-    return datetime.now(timezone.utc)
 
 async def process_entry(
     session: aiohttp.ClientSession,
@@ -166,15 +271,18 @@ async def process_entry(
     if not link:
         return None
 
-    try:
-        host = urlparse(link).netloc
-    except Exception:
+    host = parse_host(link)
+    if not host:
         return None
 
-    if host in BLOCKLIST:
+    # Exact-host block only
+    if is_blocked_host(host):
         return None
 
     published = parse_entry_date(entry)
+    if not published:
+        return None
+
     if not is_recent(published):
         return None
 
@@ -182,11 +290,13 @@ async def process_entry(
     title = re.sub(r"<[^>]+>", "", title).strip() or "Untitled"
 
     content = extract_entry_content(entry)
-
-    if not content:
-        content = await fetch_article_content(session, link, scrape_semaphore)
+    if len(strip_html(content)) < 200:
+        scraped = await fetch_article_content(session, link, scrape_semaphore)
+        if scraped:
+            content = scraped
 
     return {
+        "id": url_to_id(link),
         "link": link,
         "title": title,
         "published": published.isoformat(),
@@ -194,8 +304,9 @@ async def process_entry(
         "content": content,
         "filename": title_to_filename(title),
         "feed_url": feed_url,
-        "id": url_to_id(link),
     }
+
+# ── Feed Fetching ─────────────────────────────────────────────────────────────
 
 async def fetch_feed(
     session: aiohttp.ClientSession,
@@ -231,9 +342,9 @@ async def fetch_feed(
         return posts
 
 async def fetch_all_posts(feeds: list[str]) -> list[dict]:
-    feed_semaphore = asyncio.Semaphore(MAX_CONCURRENT)
-    scrape_semaphore = asyncio.Semaphore(SCRAPE_CONCURRENT)
-    connector = aiohttp.TCPConnector(limit=MAX_CONCURRENT)
+    feed_semaphore = asyncio.Semaphore(MAX_FEED_CONCURRENT)
+    scrape_semaphore = asyncio.Semaphore(MAX_SCRAPE_CONCURRENT)
+    connector = aiohttp.TCPConnector(limit=MAX_FEED_CONCURRENT)
 
     async with aiohttp.ClientSession(connector=connector) as session:
         tasks = [
@@ -249,6 +360,7 @@ async def fetch_all_posts(feeds: list[str]) -> list[dict]:
         if isinstance(result, Exception):
             logging.warning(f"Task error: {result}")
             continue
+
         for post in result:
             if post["link"] not in seen_links:
                 posts.append(post)
@@ -262,19 +374,7 @@ async def fetch_all_posts(feeds: list[str]) -> list[dict]:
 def build_site(posts: list[dict], total_feeds: int):
     logging.info("Building site...")
 
-    recent_posts = []
-    cutoff = datetime.now(timezone.utc) - timedelta(days=RELEVANT_DAYS)
-
-    for post in posts:
-        try:
-            pub = datetime.fromisoformat(post["published"])
-            if pub.tzinfo is None:
-                pub = pub.replace(tzinfo=timezone.utc)
-            if pub > cutoff:
-                recent_posts.append(post)
-        except Exception:
-            continue
-
+    recent_posts = prune_store(posts)
     recent_posts.sort(key=lambda p: p["published"], reverse=True)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -363,10 +463,17 @@ async def main():
         logging.error("No feeds found in feeds.txt - exiting")
         return
 
-    posts = await fetch_all_posts(feeds)
-    logging.info(f"Fetched {len(posts)} unique posts total")
+    old_posts = load_store()
+    logging.info(f"Loaded {len(old_posts)} stored posts")
 
-    build_site(posts, total)
+    new_posts = await fetch_all_posts(feeds)
+    logging.info(f"Fetched {len(new_posts)} unique posts this run")
+
+    all_posts = merge_posts(old_posts, new_posts)
+    save_store(all_posts)
+    logging.info(f"Saved {len(all_posts)} accumulated recent posts")
+
+    build_site(all_posts, total)
     logging.info("Done")
 
 if __name__ == "__main__":
