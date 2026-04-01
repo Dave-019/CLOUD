@@ -45,6 +45,7 @@ BLOCKLIST = {
     "www.metafilter.com",
     "twitter.com",
     "x.com",
+    "www.mothersalwaysright.com",
 }
 
 # ── Logging ───────────────────────────────────────────────────────────────────
