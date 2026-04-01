@@ -45,6 +45,7 @@ body {
   margin: 0 auto;
   padding: 40px 24px 80px;
   hyphens: manual;
+  overflow-x: hidden;
 }
 
 a {
@@ -126,6 +127,10 @@ a:visited {
 /* ── Post Item ────────────────────────────────────────────── */
 .post-item {
   line-height: 1.5;
+}
+.post-title {
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .post-item a.post-title {
@@ -275,6 +280,8 @@ img {
   line-height: 1.9;
   color: var(--text);
   max-width: 72ch;
+    word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .post-content h1,
