@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Así automatizo el playlist de mis canciones favoritas en Apple Music | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://blog.luiscarlospando.com/coding/2026/03/asi-automatizo-el-playlist-de-mis-canciones-favoritas-en-apple-music/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        Así automatizo el playlist de mis canciones favoritas en Apple Music
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <div class="wp-block-jetpack-markdown"><p>No sé si sabían, pero aquí en mi sitio tengo <a href="https://luiscarlospando.com/music/loved-tracks/">una página</a> donde comparto las canciones a las que les he dado “fav” o “like” últimamente.</p>
+<p>Básicamente, estoy escuchando música durante el día y uso mi Stream Deck para darle “fav” o “corazoncito” si una rola me gusta.</p>
+<p>Las canciones son automáticamente listadas en esa página que mencioné arriba y si se meten, pueden ver la lista de mis rolas favoritas a la vez que pueden escuchar un <em>preview</em> de 30 segundos de cada una.</p>
+<p>Todo bien hasta ahí, pero se me ocurrió que podría ofrecer un playlist de Apple Music que contuviera todas las canciones a las que le voy dando “fav”. ❤️</p>
+<p>Nativamente y por default, Apple Music crea un playlist que va almacenando esas canciones, pero es un playlist que Apple Music maneja de manera especial y no permite que sea un playlist de acceso público. Entonces intenté crear un <a href="https://support.apple.com/es-mx/guide/music/mus1712973f4/mac" rel="noopener" target="_blank">playlist inteligente</a>, que copiara las canciones del playlist nativo a este nuevo playlist con las siguientes reglas:</p>
+</div>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img alt="CleanShot 2026 03 27 at 20.00.06@2x" class="wp-image-9528 img-fluid" height="321" src="https://i0.wp.com/blog.luiscarlospando.com/wp-content/uploads/2026/03/CleanShot-2026-03-27-at-20.00.06%402x.png?resize=700%2C321&#038;ssl=1" style="width: 840px; height: auto;" title="Así automatizo el playlist de mis canciones favoritas en Apple Music 3" width="700" /><figcaption class="wp-element-caption"><em>Estas reglas agregan las canciones a las que le doy "fav" a mi  playlist inteligente</em></figcaption></figure>
+</div>
+
+
+<div class="wp-block-jetpack-markdown"><p>Peeero, descubrí que, al igual que el playlist nativo, los playlist inteligentes tampoco se pueden compartir públicamente. 😩 Entonces me puse a investigar más y vi que podría crear un playlist “espejo” de mi playlist inteligente, pero esta vez, como se trata de un playlist regular, podría configurarlo como público.</p>
+<p>Entonces, para alimentar y copiar el contenido de mi playlist inteligente a mi playlist público regular, vi que podría usar Apple Shortcuts combinado con AppleScript.</p>
+<p>Entonces la idea general es:</p>
+<ol>
+<li>Crear un Apple Shortcut</li>
+<li>Dentro, crear una acción AppleScript con el código que se encargue de todo</li>
+<li>Automatizar el shortcut para que corra todos los días a las 11pm y sincronice mis mi playlist inteligente con el playlist público</li>
+</ol>
+<p>Y pues quiero compartir el proceso, para tenerlo documentado aquí.</p>
+<h2>Creando el Apple Shortcut</h2>
+</div>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img alt="CleanShot 2026 03 27 at 20.17.25@2x" class="wp-image-9534 img-fluid" height="469" src="https://i0.wp.com/blog.luiscarlospando.com/wp-content/uploads/2026/03/CleanShot-2026-03-27-at-20.17.25%402x.png?resize=700%2C469&#038;ssl=1" style="width: 840px; height: auto;" title="Así automatizo el playlist de mis canciones favoritas en Apple Music 4" width="700" /></figure>
+</div>
+
+
+<div class="wp-block-jetpack-markdown"><p>Dentro de Apple Shortcuts, lo que hice fue crear un nuevo shortcut, yo le di el nombre de “Sync Apple Music Favorites” y luego del lado derecho hay que buscar la acción “Run AppleScript” y lo agregamos a nuestro shortcut.</p>
+<p>Luego, el código que hace toda la magia:</p>
+<pre><code class="language-applescript">tell application &quot;Music&quot;
+	set sourcePlaylistName to &quot;Canciones Favoritas&quot;
+	set destinationPlaylistName to &quot;Canciones Favoritas (Pública)&quot;
+	
+	-- Verificar que existan las playlists
+	try
+		set sourcePlaylist to playlist sourcePlaylistName
+	on error
+		display notification &quot;No se encontró la playlist origen: &quot; &amp; sourcePlaylistName with title &quot;Apple Music Sync&quot;
+		return
+	end try
+	
+	try
+		set destinationPlaylist to playlist destinationPlaylistName
+	on error
+		display notification &quot;No se encontró la playlist destino: &quot; &amp; destinationPlaylistName with title &quot;Apple Music Sync&quot;
+		return
+	end try
+	
+	-- Obtener identificadores únicos del destino (nombre + artista)
+	set destinationKeys to {}
+	repeat with t in (tracks of destinationPlaylist)
+		try
+			set trackKey to (name of t) &amp; &quot;||&quot; &amp; (artist of t)
+			set end of destinationKeys to trackKey
+		on error errMsg
+			display notification &quot;Error leyendo destino: &quot; &amp; errMsg with title &quot;Apple Music Sync&quot;
+		end try
+	end repeat
+	
+	-- Recorrer tracks de origen y agregar los que falten
+	set addedCount to 0
+	set errorCount to 0
+	
+	repeat with t in (tracks of sourcePlaylist)
+		try
+			set trackKey to (name of t) &amp; &quot;||&quot; &amp; (artist of t)
+			
+			if destinationKeys does not contain trackKey then
+				try
+					duplicate t to destinationPlaylist
+				on error
+					-- Fallback para tracks de iCloud/streaming
+					add t to destinationPlaylist
+				end try
+				set end of destinationKeys to trackKey
+				set addedCount to addedCount + 1
+			end if
+		on error errMsg
+			set errorCount to errorCount + 1
+		end try
+	end repeat
+	
+	-- Notificación de resultado
+	if errorCount &gt; 0 then
+		display notification &quot;Errores en &quot; &amp; errorCount &amp; &quot; tracks. Agregadas: &quot; &amp; addedCount with title &quot;Apple Music Sync ⚠️&quot;
+	else if addedCount is 0 then
+		display notification &quot;Tu playlist pública ya está al día ✅&quot; with title &quot;Apple Music Sync&quot;
+	else if addedCount is 1 then
+		display notification &quot;Se agregó 1 canción nueva 🎧&quot; with title &quot;Apple Music Sync&quot;
+	else
+		display notification &quot;Se agregaron &quot; &amp; addedCount &amp; &quot; canciones nuevas 🎧&quot; with title &quot;Apple Music Sync&quot;
+	end if
+end tell
+</code></pre>
+<p>Lo que hace este código es, básicamente recorrer las canciones que existen en mi playlist inteligente y los copia a mi playlist público.</p>
+<p>Hay dos parámetros importantes, que son los nombres de los playlist que tienen que coincidir exactamente, sino, este script no va a funcionar.</p>
+<p>En mi caso se llaman así:</p>
+<ul>
+<li>Playlist inteligente: <code>Canciones Favoritas</code></li>
+<li>Playlist público: <code>Canciones Favoritas (Pública)</code></li>
+</ul>
+<p>Al correr este script, se envía una notificación solamente si hay cambios en el playlist, y si durante todo el día no le di “fav” a ninguna canción, entonces no tiene caso mandar notificación.</p>
+<h2>Automatizando el shortcut</h2>
+<p>Y para automatizar este shortcut para que se ejecute todos los días a las 11:00 pm, utilizo <a href="https://luiscarlospando.com/uses#shortery">Shortery</a>, una app para macOS que precisamente sirve para poder programar y triggerear Apple Shortcuts dependiendo de ciertas condiciones. En este caso así se ve mi automatización:</p>
+</div>
+
+
+<div class="wp-block-image">
+<figure class="aligncenter size-large is-resized"><img alt="CleanShot 2026 03 27 at 20.55.32@2x" class="wp-image-9538 img-fluid" height="490" src="https://i0.wp.com/blog.luiscarlospando.com/wp-content/uploads/2026/03/CleanShot-2026-03-27-at-20.55.32%402x.png?resize=700%2C490&#038;ssl=1" style="width: 840px; height: auto;" title="Así automatizo el playlist de mis canciones favoritas en Apple Music 5" width="700" /></figure>
+</div>
+
+
+<div class="wp-block-jetpack-markdown"><p>Al hacer esto, Shortery se encargará de correr el shortcut todos los días a las 11:00 pm (sin importar que mi computadora esté bloqueada). De esa manera se mantendrá actualizado mi playlist público.</p>
+<p>Y pues eso es básicamente todo. Solo quería dejar documentado el proceso, que es un caso de uso muy específico y no considero que le sea útil a alguien más (¿o sí?), así que es bueno compartirlo por si le sirve de inspiración a alguien.</p>
+<p>Si <a href="https://luiscarlospando.com/music/loved-tracks/">visitas mi página de “Canciones Favoritas”</a>, puedes encontrar un botón que te lleva al playlist, pero como sé que son flojos 😜, lo comparto directamente <a href="https://music.apple.com/mx/playlist/canciones-favoritas-p%C3%BAblica/pl.u-84rjIN8L7V3?l=en" rel="noopener" target="_blank">aquí</a>.</p>
+</div>
+
+
+
+<p></p>
+<hr /><p>Gracias por leer mi <a href="https://luiscarlospando.com/">blog</a> y ser un suscriptor.</p><p>Si disfrutas mi contenido, puedes <a href="https://buymeacoffee.com/luiscarlospando" rel="noopener" target="_blank">comprarme un café</a>, que aunque no es necesario, se agradece bastante. 🙏 También me puedes seguir en <a href="https://social.lol/@mijo" rel="noopener" target="_blank">Mastodon</a> y/o en <a href="https://bsky.app/profile/luiscarlospando.com">Bluesky</a>.</p><p>¡Hasta la próxima, cuidate! 👋</p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Retreating to the Small Internet | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://blakewren.bearblog.dev/retreating-to-the-small-internet/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        Retreating to the Small Internet
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <p>Recently I've started to reject the algorithmically governed feeds of YouTube and the like. I can't even place what specifically it was that drove me to do this, but I don't gain much value from scrolling through endless videos that an algorithm thinks I'll like, only to be left bored and numb. The small internet became an appealing escape. I canceled most of my subscriptions, changed my habits, cut back some discord servers, and started a blog instead.</p>
+<p>Engagement chasing I feel is part of the problem. On a large platform like YouTube where it has become a full time job for some people, your success is tracked directly with how many people view and interact with your content, because of these ad-focused, engagement-driven algorithms that seek to enrich the corporation. On what I've come to refer to as "the small internet", I can write about whatever I feel like, and follow blogs or sites for topics or people that I find interesting without a culture of view counts and analytics.</p>
+<p>Sure, I still use YouTube some, but when I do I try to keep it to my subscriptions tab, and avoid the short-form endless scroll trap it's been pushing these days. I've taken a similar approach to my "small internet" interactions, and picked up an RSS reader and added a few blogs to it that I find interesting. Instead of being served up generalized content pushed by an algorithm to serve an agenda, I've started relying on random chance in the Bear discover feed, or specific searches to find the sites and things that I want to follow for my own sake rather than the profit of a corporation.</p>
+<p>The biggest benefit in all of this has been that I finally feel like I can relax. The internet at large, or at least the parts I interacted with, feels like it pressures me to constantly have an opinion about everything going on, and whatever that opinion is, I'll probably piss someone off for having it. Back down here on the ground, with my books and small corners of the internet, I don't have to stress as much about things. It feels a lot like the better parts of the early to mid 2000's in that regard. Wonder what my new Neopets will be.</p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

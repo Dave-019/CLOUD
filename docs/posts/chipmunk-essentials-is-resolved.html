@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chipmunk essentials is resolved | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://chandrahalim.com/chipmunk-essentials-is-resolved/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        Chipmunk essentials is resolved
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <p>So I think after all, AI in Chipmunk is way too early. Despite X and Facebook has already applied AI natively on their platform, but I guess for Chipmunk, it's still way too early.</p>
+<p>Probably because I need to see it with my own eyes to decide and determine what should AI be applied on Chipmunk. But so far for now, I think I can't determine how we should apply AI and I think AI is still too early. So I put it aside.</p>
+<p>And I think that solves the last part of the project Chipmunk Essentials. Because we have solved the rest two of the problem yesterday with monetization methods (it solved 2 problems).</p>
+<p>And I think I'm gonna add a few more of Chipmunk essentials again to solve, to improve Chipmunk to become a better place for everyone.</p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

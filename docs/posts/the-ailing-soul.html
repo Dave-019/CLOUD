@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Ailing Soul | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://branemrys.blogspot.com/2026/03/the-ailing-soul.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        The Ailing Soul
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <p></p><blockquote>&nbsp;The Redeemer presents himself to the world as a charitable physician, and the sicknesses of the body belong to the ultimate purpose of his redemption because they are parables for the operation of the ailing soul. Among the many troubles by which the dominion of Satan was evident in our Savior's times, three especially are noted here: <b>demon-possessed</b>&nbsp;people, whose soul was perhaps less fettered and whose body Satan therefore regarded as his own, so that it was nothing better than stage for the slavery of souls; <b>lunatics</b>, people whose conceptions and acts did not depend on the will of their souls but on external impressions, people who were therefore not in a self-conscious state...; cripples with a <b>paralysis of limbs</b>&nbsp;that makes us unable to use them. Taken together, all three show the corruption, the misery, that our sin has inflicted on us.</blockquote><p></p><p>[Johann Georg Hamann, <i>The Complete London Writings</i>, Kleinig, tr., Lexham Academic (Bellingham: 2025) p. 256. This comment is on Matthew 4:24.]</p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

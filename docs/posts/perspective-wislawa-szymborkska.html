@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Perspective — Wislawa Szymborkska | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://bookofjoe2.blogspot.com/2026/03/ccc.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        Perspective — Wislawa Szymborkska
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <div class="separator" style="clear: both; text-align: center;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjY4FXzyq-esn4aGzSphcMfgfLL3amJRra1qv3KEwBZnXHjLzABcAPMfwgHSYKEwJe97eFVTpIbMMeC2y5TUnnxkVK18PVOouGyKK-fcg0bPYq8EIHirlDlJ24oRMxA32qwF-J9tJSJIanNbIXizWSbWZKppfdqmfHNCodSf3dod5zalWsOcbiywSPowIUd/s1670/poem%201.png" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="640" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjY4FXzyq-esn4aGzSphcMfgfLL3amJRra1qv3KEwBZnXHjLzABcAPMfwgHSYKEwJe97eFVTpIbMMeC2y5TUnnxkVK18PVOouGyKK-fcg0bPYq8EIHirlDlJ24oRMxA32qwF-J9tJSJIanNbIXizWSbWZKppfdqmfHNCodSf3dod5zalWsOcbiywSPowIUd/w280-h640/poem%201.png" width="280" /></a></div><br /><p><br /></p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

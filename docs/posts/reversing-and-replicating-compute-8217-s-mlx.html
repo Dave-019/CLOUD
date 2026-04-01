@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reversing and Replicating Compute!&#8217;s MLX | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://bumbershootsoft.wordpress.com/2026/03/28/reversing-and-replicating-computes-mlx/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        Reversing and Replicating Compute!&#8217;s MLX
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <p class="wp-block-paragraph">A quicker article this week, inspired both by my revisit of <em><a href="https://bumbershootsoft.wordpress.com/2026/03/21/onefiling/" rel="noreferrer noopener" target="_blank">Compute!&#8217;s Gazette</a></em> and pondering its paper-based binary software distribution.</p>
+
+
+
+<p class="wp-block-paragraph">I&#8217;d already looked at <a href="https://bumbershootsoft.wordpress.com/2019/01/14/dissecting-three-classic-automatic-proofreaders/" rel="noreferrer noopener" target="_blank">its two BASIC-focused automatic proofreaders in detail</a>, but these were each one program of a pair. Its companion program was called &#8220;MLX,&#8221; and its job was to allow you to enter programs published simply as long columns of bytes.</p>
+
+
+
+<p class="wp-block-paragraph">This kind of binary listing wasn&#8217;t uncommon, back in the day—many old computers had simple debuggers built in called <a href="https://en.wikipedia.org/wiki/Machine_code_monitor" rel="noreferrer noopener" target="_blank">machine code monitors</a> that would let you load up memory with strings of hexadecimal values, save them to disk, and load them back later. That approach had two disadvantages, though: first, an error in the data entry could be insidious and nearly impossible to track down, and second, not all computers actually came with monitors built in. The Commodore 64, for example, did not. MLX was a self-contained, monitor-like application for entering, saving, and loading a binary listing which required nothing but BASIC (and ideally the Automatic Proofreader to help you type it in), and it also included a checksum byte every few bytes to make sure that you had not made any errors. This made it far more likely that your machine code program was entered properly the first time.</p>
+
+
+
+<p class="wp-block-paragraph">(And yes, if this process sounds like a miserable slog to you, it&#8217;s not exactly a thrill a minute, but also, it&#8217;s still a faster process than one might expect. When I was on a roll with one of these listings, I could easily end up entering a kilobyte of binary in 15-20 minutes, and it was very rare to encounter a program listing over 6KB. Listen to an album or two along the way and it&#8217;ll be done in less than an evening, even if you take regular breaks to rest your eyes and hands.)</p>
+
+
+
+<p class="wp-block-paragraph">Despite being pretty effective, <em>Compute!</em> always admitted that there were some serious flaws in the checksums they used, despite shifting to a far more robust one in 1986. The revived <em>Gazette</em> brand introduced third editions of the Automatic Proofreader and MLX in January of 2026 and while the Proofreader&#8217;s functionality was identical, MLX&#8217;s checksum algorithm was rewritten yet again.</p>
+
+
+
+<p class="wp-block-paragraph">Today, I&#8217;m going to look at these three versions and what it was like to use them, then recreate their checksum algorithms in a modern system that will let us fabricate MLX listings out of our <strong><code>.PRG</code></strong> files in the comfort of our modern systems.</p>
+
+
+
+<p class="wp-block-paragraph">But first, let&#8217;s look at them in action.</p>
+
+
+
+<span id="more-5647"></span>
+
+
+
+<h2 class="wp-block-heading">1983: MLX</h2>
+
+
+
+<p class="wp-block-paragraph">The first version of MLX provides a fancy banner, then asks you for the start and end addresses of the program you are entering:</p>
+
+
+
+<figure class="wp-block-image size-large"><a href="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlx1_0.png"><img alt="" class="wp-image-5639" height="402" src="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlx1_0.png?w=625" width="625" /></a></figure>
+
+
+
+<p class="wp-block-paragraph">Once we give the addresses the screen clears and we can start entering our code. We could, for instance, start typing in <a href="https://www.atariarchives.org/2bml/appendix_b.php" rel="noreferrer noopener" target="_blank">LADS</a>, one of the assemblers we played with <a href="https://bumbershootsoft.wordpress.com/2026/03/14/playing-around-with-the-c64-ultimate/" rel="noreferrer noopener" target="_blank">two weeks ago</a>:</p>
+
+
+
+<figure class="wp-block-image size-large"><a href="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlx1_1.png"><img alt="" class="wp-image-5640" height="402" src="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlx1_1.png?w=625" width="625" /></a></figure>
+
+
+
+<p class="wp-block-paragraph">As you can see, the first version of MLX worked entirely in decimal and offered six bytes of data per checksum byte. As each line is completed, the program will beep happily if the checksum works properly and buzz angrily if it&#8217;s wrong, rewinding and prompting us to re-enter the line. Two hours or so later…</p>
+
+
+
+<figure class="wp-block-image size-large"><a href="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlx1_2.png"><img alt="" class="wp-image-5641" height="402" src="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlx1_2.png?w=625" width="625" /></a></figure>
+
+
+
+<p class="wp-block-paragraph">… we have all 5K of the program entered, the screen clears again, and we are prompted to save.</p>
+
+
+
+<figure class="wp-block-image size-large"><a href="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlx1_3.png"><img alt="" class="wp-image-5642" height="402" src="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlx1_3.png?w=625" width="625" /></a></figure>
+
+
+
+<p class="wp-block-paragraph">It then sends us back into the data entry mode, past the actual end of our program. From here we can reboot, and try out our fancy new program.</p>
+
+
+
+<p class="wp-block-paragraph">It is not visible in the screenshots, but one nice feature that MLX had from the start was that while in data entry mode it remapped some of the keys to work like a numeric keypad. I never really relied on this but I must imagine that this would have been a lifesaver at the time for those folks who needed to do this regularly.</p>
+
+
+
+<p class="wp-block-paragraph">A less friendly aspect of this first version of MLX is that the data you entered was placed directly into memory in the place it would eventually be loaded. This in turn meant that if you were writing a program that expected to be loaded like a BASIC program, you would need to prepare the ground first by manually rewriting BASIC&#8217;s pointers before loading MLX to keep it somewhere that will remain safe. This sort of technique came up <a href="https://bumbershootsoft.wordpress.com/2026/03/21/onefiling/" rel="noreferrer noopener" target="_blank">last week in the onefiling discussion</a>, as well as when <a href="https://bumbershootsoft.wordpress.com/2017/09/06/c64-basic-coexisting-with-non-basic-data/" rel="noreferrer noopener" target="_blank">I discussed loader generators in the context of hybrid BASIC/machine language programs</a> as well, and it&#8217;s just as vexing here.</p>
+
+
+
+<p class="wp-block-paragraph">The checksum algorithm in this first edition is very simple: it sums up the six bytes you just entered, adds the low byte of the address that started the line, and takes the low byte of the result as the checksum. This is much, much better than nothing, but as <em>Compute!</em> itself admitted, it can&#8217;t catch typing the bytes in in the wrong order. More insidiously, if you make a matching typo on both a data byte and the checksum byte (say, consistently mistyping the number 5 as 6), there&#8217;s a good chance that your errors will cancel out producing a &#8220;successful&#8221; line entry that is nevertheless erroneous.</p>
+
+
+
+<h2 class="wp-block-heading">1986: MLX II</h2>
+
+
+
+<p class="wp-block-paragraph">The update to MLX is less pretty in its opening but brings several extremely welcome changes.</p>
+
+
+
+<figure class="wp-block-image size-large"><a href="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlx2_0.png"><img alt="" class="wp-image-5643" height="402" src="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlx2_0.png?w=625" width="625" /></a></figure>
+
+
+
+<p class="wp-block-paragraph">We&#8217;re working in hex now, and instead of having to dig through an appendix to figure out what the control keys are to load or save partial work, there&#8217;s a full-scale menu! When we choose to &#8220;Enter Data&#8221;, we also see that we&#8217;ve got eight data bytes per line:</p>
+
+
+
+<figure class="wp-block-image size-large"><a href="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlx2_1.png"><img alt="" class="wp-image-5644" height="402" src="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlx2_1.png?w=625" width="625" /></a></figure>
+
+
+
+<p class="wp-block-paragraph">We look like a proper monitor entry system now! The numpad feature is also back, expanded a bit around the edges so that it can enter hexadecimal. Better yet, MLX II stores every program you enter in a buffer ranging from <strong><code>$3200</code></strong>&#8211;<strong><code>$9FFF</code></strong> no matter what the final load address will be. That means we no longer need to poke at BASIC&#8217;s internal memory layout in order to enter a program with a BASIC stub in it.</p>
+
+
+
+<p class="wp-block-paragraph">The checksum algorithm is also much more sophisticated.</p>
+
+
+
+<ul class="wp-block-list">
+<li>At the start of each line, the checksum is initialized to the low byte of the address plus twice the high byte of the address.</li>
+
+
+
+<li>For each of the eight bytes in the line, this value is doubled, then the new value is added to it.</li>
+
+
+
+<li>The final sum modulo 255 is the checksum of this line. If the sum was not zero, but <em>is</em> congruent to zero modulo 255, the checksum is <strong><code>$FF</code></strong>, not zero.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">This is a much better system: it uses 15 of the address bits instead of 8 in the checksum, and order now matters thanks to the doubling before each sum. Earlier bytes do not end up shifting out of the checksum entirely because the modulus is not a power of two.</p>
+
+
+
+<p class="wp-block-paragraph">That non-power-of-two modulus <em>does</em> bring us to this edition&#8217;s openly-admitted problem: it cannot distinguish the bytes <strong><code>$00</code></strong> and <strong><code>$FF</code></strong>. The synchronized-typo problem is also present, though lessened; in MLX 2 this only poses a consistent hazard when our error is in the checksum and the final data byte.</p>
+
+
+
+<p class="wp-block-paragraph">The strange test where at the end we probably, but do not <em>necessarily,</em> have to change 0 to 255 is an artifact of them doing modulo by repeated subtraction and testing with <code>&gt;</code> when they should have tested with <code>&gt;=</code> for a true modulo operation.</p>
+
+
+
+<h2 class="wp-block-heading">2026: MLX III</h2>
+
+
+
+<p class="wp-block-paragraph">Which brings us to the present day. We seem to have persisted in a pattern of each edition getting less flashy but more robust:</p>
+
+
+
+<figure class="wp-block-image size-large"><a href="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlx3_0.png"><img alt="" class="wp-image-5645" height="402" src="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlx3_0.png?w=625" width="625" /></a></figure>
+
+
+
+<p class="wp-block-paragraph">We&#8217;re up to ten bytes per line, using as much screen space as we can. We&#8217;re not even bothering with reverse video for our prompts anymore, much less color. But we&#8217;ve also got a checksum algorithm that solves all the problems I&#8217;ve mentioned so far:</p>
+
+
+
+<ul class="wp-block-list">
+<li>We start the line with <em>three</em> checksum bytes. The first is the low byte of the start address, the second is the high byte, and the third is zero.</li>
+
+
+
+<li>For each byte in the line, first add its value to the first checksum byte. Then add the first checksum byte to the second. Finally, if the value was <strong><code>$80</code></strong> or larger, increment the third byte.</li>
+
+
+
+<li>The checksum value is the low byte of the sum of these values, unless that ends up being zero, in which case the checksum value is <strong><code>$FF</code></strong>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">This cumulative-sum approach ends up making the first byte contribute eleven times to the sum, the second ten, and so on down to the tenth byte contributing twice. That is very similar to what the Automatic Proofreader does, but is more efficient to compute. The third checksum byte means that we can distinguish zero from 255. And the fact that the last byte contributes <em>twice</em> means that a synchronized typo will now basically never result in accidentally typo-ing in an erroneously-correct checksum.</p>
+
+
+
+<p class="wp-block-paragraph">Presumably, the zero checksum here is forbidden out of solidarity with the MLX II results. This narrows the space unnecessarily—we actually are using all 256 possible values here—but with only ten bytes to summarize it doesn&#8217;t seem too harmful.</p>
+
+
+
+<h2 class="wp-block-heading">MLXKit</h2>
+
+
+
+<p class="wp-block-paragraph">I&#8217;ve collected these three checksum algorithms into a simple commandline application: <a href="https://github.com/michaelcmartin/mlxkit" rel="noreferrer noopener" target="_blank">MLXKit</a>. It accepts a C64 program and optionally a version argument, defaulting to 2. It will then print out an appropriate listing, along with start and end addresses. MLX 1 listings will include the pointer-hacking commands to type if necessary.</p>
+
+
+
+<p class="wp-block-paragraph">This turns out to be a simple enough program that it I got it to build and run on DOS and the Amiga as well:</p>
+
+
+
+<figure class="wp-block-image size-large"><a href="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlxkit_k13.png"><img alt="" class="wp-image-5646" height="477" src="https://bumbershootsoft.wordpress.com/wp-content/uploads/2026/02/mlxkit_k13.png?w=625" width="625" /></a><figcaption class="wp-element-caption">Why yes, this listing <em>will</em> give you a ready-to-run, pure machine-code version of my first project on the blog.</figcaption></figure>
+
+
+
+<p class="wp-block-paragraph">It&#8217;s always fun when a modern program runs unchanged on 40-year-old systems.</p>
+
+
+
+<p class="wp-block-paragraph"></p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

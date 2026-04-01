@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rock climbing as metaphor | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://blog.kenperlin.com/?p=28323"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        Rock climbing as metaphor
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <p>Sometimes research feels a little like rock climbing. You look up, and you see a daunting cliff looming high above. You tell yourself that you could never climb something like that.</p>
+<p>But then you get a foothold, and you pull yourself up a bit. From a little higher, you spot new ways up that you couldn&#8217;t see before.</p>
+<p>After a while you rest a bit, and think about strategy. Then you keep going.</p>
+<p>Sometimes you found out that you&#8217;ve been navigating into a dead end for that last little stretch. When that happens you need to carefully ease your way down again and regroup.</p>
+<p>But eventually, if you are patient and careful and persistent, you make it all the way to the top. Then you can celebrate with a little lunch.</p>
+<p>And maybe publish.</p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

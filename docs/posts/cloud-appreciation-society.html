@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cloud Appreciation Society | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://bookofjoe2.blogspot.com/2026/03/cloud-appreciation-society.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        Cloud Appreciation Society
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <br /><p><span style="font-size: large;">Wrote <a href="https://buttondown.com/clivethompson" target="_blank">Clive Thompson</a>: "The <a href="https://cloudappreciationsociety.org/?utm_source=clivethompson&amp;utm_medium=email&amp;utm_campaign=linkfest-43-archaeoacoustics-nocotourism-and-the" target="_blank">Cloud Appreciation Society</a> is exactly what it sounds like: A <a href="https://cloudappreciationsociety.org/cas-membership-intro/?utm_source=clivethompson&amp;utm_medium=email&amp;utm_campaign=linkfest-43-archaeoacoustics-nocotourism-and-the" target="_blank">social network</a> where people share photos of remarkable clouds they've seen. To help you identify clouds, they have a <a href="https://geni.us/8aWhgBn?utm_source=clivethompson&amp;utm_medium=email&amp;utm_campaign=linkfest-43-archaeoacoustics-nocotourism-and-the" target="_blank">free mobile app</a>, a cool old-school <a href="https://cloudappreciationsociety.org/shop/cloud-selector/?utm_source=clivethompson&amp;utm_medium=email&amp;utm_campaign=linkfest-43-archaeoacoustics-nocotourism-and-the" target="_blank">cardboard-wheel cloud taxonomizer</a>, and a <a href="https://cloudappreciationsociety.org/shop/cloudspotting-for-beginners-signed/?utm_source=clivethompson&amp;utm_medium=email&amp;utm_campaign=linkfest-43-archaeoacoustics-nocotourism-and-the" target="_blank">picture book</a>, <a href="https://www.abebooks.com/servlet/BookDetailsPL?bi=32387469294&amp;dest=USA&amp;ref_=ps_ggl_17730880232&amp;cm_mmc=ggl-_-US_Shopp_Trade_10to20-_-product_id=US9780593836057USED-_-keyword=&amp;gad_source=1&amp;gad_campaignid=17190383924&amp;gbraid=0AAAAAD3Y6gtPKohmNJ8bB4nTm9lpjFwkp&amp;gclid=Cj0KCQjw4PPNBhD8ARIsAMo-icytvlhs2St-nxGLMbVwXV1vv9BxjjxdMY58CD2a_LVmfI0a0-WqIcoaAo_KEALw_wcB" target="_blank">'Cloudspotting for Beginners.'</a>"</span></p><p><span style="font-size: large;">Wait a sec — what's that <a href="https://youtu.be/7cBf0olE9Yc?si=f80sG1hkU6Em9ZLK" target="_blank">song</a> I'm hearing?&nbsp;</span></p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Twitter posts reduce ability to write microblogs | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://chandrahalim.com/twitter-posts-reduce-ability-to-write-microblogs/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        Twitter posts reduce ability to write microblogs
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <p>Writing post for Twitter is actually something that decapitates our ability to write long or medium form.</p>
+<p>So even if Twitter is a microblog, but doing Twitter is actually stopping us from doing what is actually called microblogging.</p>
+<p>Seriously, try yourself to write a microblog instead of Twitter posts. And I'm sure if you have been getting used with doing social media like Twitter or Facebook, you'll have some kind of difficulty to do microblog.</p>
+<p>Even though social media like Twitter or Facebook can be said as a microblog, but it is actually something that stops us from doing what is actually called microblogging.</p>
+<p>That's just my theory. It's just something that I feel by doing what is called with microblogging and Twitter is something that is actually different. I think it shouldn't even be called microblog on Twitter.</p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

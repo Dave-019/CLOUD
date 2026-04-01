@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="A personal RSS feed aggregator" />
+  <title>RECTIFIER</title>
+  <link rel="stylesheet" type="text/css" href="styles.css" media="screen" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <h1>Привет</h1>
+    <div class="site-meta">
+      Last updated: {{ last_updated }} ·
+ 
+    </div>
+  </header>
+
+  <!-- Skeleton -->
+  <ul class="skeleton-list" id="skeleton">
+    {% for i in range(10) %}
+    <li>
+      <div class="skeleton-line
+        {% if i % 2 == 0 %}skeleton-title
+        {% else %}skeleton-title-short{% endif %}">
+      </div>
+      <div class="skeleton-line skeleton-meta"></div>
+    </li>
+    {% endfor %}
+  </ul>
+
+  <!-- Post List -->
+  <ol class="post-list" id="post-list" style="display:none">
+    {% for post in posts %}
+    <li class="post-item">
+
+      {% if post.content %}
+      <a class="post-title" href="posts/{{ post.filename }}">
+        {{- post.title -}}
+      </a>
+      {% else %}
+      <a class="post-title"
+         href="{{ post.link }}"
+         target="_blank"
+         rel="noopener noreferrer">
+        {{- post.title -}}
+      </a>
+      {% endif %}
+
+      <span class="post-meta">
+        ({{ post.host }})
+        <span class="post-date" data-published="{{ post.published_iso }}"></span>
+      </span>
+
+    </li>
+    {% endfor %}
+  </ol>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>Built with Python ·
+      <a href="https://github.com/Dave-019/my-rss-feeds">source</a>
+    </p>
+  </footer>
+
+  <script>
+    function timeAgo(isoString) {
+      if (!isoString) return '';
+      var now  = new Date();
+      var then = new Date(isoString);
+      if (isNaN(then.getTime())) return '';
+      var diff = Math.floor((now - then) / 1000);
+
+      if (diff < 60) return 'just now';
+
+      var mins = Math.floor(diff / 60);
+      if (mins < 60) return mins + 'm ago';
+
+      var hours = Math.floor(mins / 60);
+      if (hours < 24) return hours + 'h ago';
+
+      var days = Math.floor(hours / 24);
+      if (days === 1) return 'yesterday';
+      if (days < 7)  return days + 'd ago';
+
+      var weeks = Math.floor(days / 7);
+      if (weeks < 4) return weeks + 'w ago';
+
+      return then.toLocaleDateString('en-KE', {
+        day: 'numeric', month: 'short', year: 'numeric'
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', function () {
+
+      // Swap skeleton → real list
+      document.getElementById('skeleton').style.display = 'none';
+      document.getElementById('post-list').style.display = 'flex';
+
+      // Time ago
+      document.querySelectorAll('.post-date').forEach(function (el) {
+        var iso = el.getAttribute('data-published');
+        if (iso) el.textContent = timeAgo(iso);
+      });
+
+      // Simple lazy load, no wrapper no skeleton
+      document.querySelectorAll('img').forEach(function (img) {
+        img.loading = 'lazy';
+        img.addEventListener('error', function () {
+          img.style.display = 'none';
+        });
+      });
+
+    });
+  </script>
+
+</body>
+</html>

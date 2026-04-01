@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>There is no such thing as pure VR | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://blog.kenperlin.com/?p=28321"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        There is no such thing as pure VR
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <p>I have been having a lot of discussions recently with colleagues about the nature of virtual reality. Different people have different definitions for which experiences, exactly, should be considered VR, and what experiences shouldn&#8217;t.</p>
+<p>But one thing that we all agree on is that there is actually no such thing as pure virtual reality. In a sense, VR is a kind of willful collective fiction, albeit an often useful one.</p>
+<p>The reason is pretty simple: No matter what technology you use to virtually &#8220;transport&#8221; you to another world, you still remain within your body. You may have the sensation of an out of body experience, but that is an illusion.</p>
+<p>There is nothing new about this principle. For example, many people cry at movies, even though they know full well that they are looking at a recording of actors playing make-believe. The power of all media depends on our human ability to ignore literal reality when we wish to.</p>
+<p>Similarly, when you are wearing that VR headset, even if you don&#8217;t perceive the wall or the couch or the coffee table, you know that they are still there, and that your physical body could still run into them.</p>
+<p>And that&#8217;s really ok.</p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

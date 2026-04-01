@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Transformers from the inside out | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://brandonrohrer.org/data_eng_for_beginners.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        Transformers from the inside out
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <p>
+If you need to climb the Data Engineering learning curve quickly (perhaps in preparation for an interview) I made
+<a href="https://brandonrohrer.org/data_eng_for_beginners.html">
+a handy one-stop guide</a>.
+</p>
+
+<p>
+It covers all the basic concepts in a beginner-friendly way. 
+The cool part is that most of them aren't too complex, once you strip away
+the fancy names. when you're done, you'll know the difference between
+strong consistency and eventual consistency, between a flat schema
+and a star schema, between OLAP and OLTP, and you'll be able to explain
+what makes a data warehouse, a data catalog, a data lake, and a data mart.
+</p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

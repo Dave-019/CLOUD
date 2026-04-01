@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Picture of the Day | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://bookofjoe2.blogspot.com/2026/03/picture-of-day.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        Picture of the Day
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <div class="separator" style="clear: both; text-align: center;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgJe2bSLFfEcHRNXvibnPdM2HOLJM7-m52qngV_2-q2Jc6851iUBJFpLNwt1VgUkg4BL71PUyA-OxXxya0FwEj1KDzu5iicYJiz5m14AYT4Hu4Rjfl2Mo0heElDavu8pDq2GOP2bCxqFcxSh0zef2AVZEOu1CqY5xiY0sdTANK10wwn8GouFqbVJ8zfCyE8/s1587/Screenshot%202026-03-17%20at%207.52.57%E2%80%AFAM.png" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="424" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgJe2bSLFfEcHRNXvibnPdM2HOLJM7-m52qngV_2-q2Jc6851iUBJFpLNwt1VgUkg4BL71PUyA-OxXxya0FwEj1KDzu5iicYJiz5m14AYT4Hu4Rjfl2Mo0heElDavu8pDq2GOP2bCxqFcxSh0zef2AVZEOu1CqY5xiY0sdTANK10wwn8GouFqbVJ8zfCyE8/w640-h424/Screenshot%202026-03-17%20at%207.52.57%E2%80%AFAM.png" width="640" /></a></div><br /><p><br /></p><p><br /></p><p><br /></p><p><br /></p><p><br /></p><p><br /></p><p><br /></p><p><br /></p><p><br /></p><p><br /></p><p><br /></p><p><br /></p><p><br /></p><p><br /></p><p><span style="font-size: x-large;">Taken at Chicago's O'Hare International Airport.</span></p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

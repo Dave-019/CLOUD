@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A Poem Re-Draft and Three Poem Drafts | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://branemrys.blogspot.com/2026/03/a-poem-re-draft-and-three-poem-drafts.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        A Poem Re-Draft and Three Poem Drafts
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <p><b>The Poem Inside&nbsp;</b></p><p>I'm sorry that I cannot tell you<br />the poem I have inside.<br />I swear that I have tried before:
+<br />I wrote it. The writing lied.
+<br />Sometimes with undocile heart
+<br />I clouded it with pride.
+<br />Sometimes I blew the spark to glow
+<br />but still the fire died.
+<br />Sometimes I reached out steady hand
+<br />but the words all ran to hide.
+<br />I'm sorry that I cannot give you
+<br />the poem I have inside.</p><p><br /></p><p><b>Psalm 117</b></p><p>Praise God, all nations,<br />exult, all tribes,<br />for great with patience<br />His truth abides.</p><p><br /></p><p><b>Your Words Are Washing on My Shore</b></p><p>Your words are washing on my shore;<br />the time is cold;<br />the slightly salty sea breeze is tending to the bold;<br />and I, on dampened sands, can no longer ignore<br />the touch of gold in distant sky,<br />the shift from night to morning chill,<br />and I begin to think, with vibrant thrill,<br />that the world is changing, though I cannot fathom why.<br />What is this oceanic feeling that I find?<br />The dawning sun steps through the door;<br />your words are washing on my shore,<br />and I rejoice in mind.</p><p><br /></p><p><b>Poor Counsel</b></p><p>"What's the matter?"<br />said the black cat<br />running 'round<br />the hat rack.<br />"Stop being&nbsp;<br />such a sad sack;<br />here, friend, enjoy<br />a fat rat."<br /></p><p>But now I'm sadder,<br />and that's that.</p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

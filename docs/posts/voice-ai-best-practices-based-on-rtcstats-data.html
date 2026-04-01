@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Voice AI best practices, based on rtcStats data | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://bloggeek.me/voice-ai-best-practices/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        Voice AI best practices, based on rtcStats data
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <p>WebRTC is the backbone of Voice AI, yet our analysis reveals that not all voice bot implementations are created equal; read on to learn the essential best practices for echo cancellation, Opus bitrates, and network configuration to ensure your bot works for everyone.</p>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77793" height="576" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-voiceai-best-practices-1024x576.jpg" width="1024" /></figure>
+
+
+
+<p>Voice AI is THE thing today. The new interface that will solve all of our troubles. Like HAL 9000 from Space Odyssey, we’re all going to chat ourselves to death with our favorite LLM friend.</p>
+
+
+
+<p>Now… Voice AI done right requires WebRTC today. Why?</p>
+
+
+
+<ol class="wp-block-list">
+<li>Because it just works</li>
+
+
+
+<li>It offers low latency</li>
+
+
+
+<li>The best AI frameworks for Voice AI are built on top and with WebRTC infrastructure. And they are open source</li>
+</ol>
+
+
+
+<p>In the past few months we’ve been looking at the <a href="https://bloggeek.me/webrtc-internals/">webrtc-internals</a> dump files of quite a few Voice AI services using <a href="https://rtcstats.com">rtcStats</a>. We found some interesting implementation decisions and places where there’s room for improvements. All that led to this article, focusing on best practices in using WebRTC for Voice AI.</p>
+
+
+
+<div class="wp-block-yoast-seo-ai-summarize yoast-ai-summarize"><h2>Key Takeaways</h2>
+<ul class="wp-block-list yoast-ai-summarize-list">
+<li>Voice AI requires proper use of WebRTC to ensure low latency and reliable connections</li>
+
+
+
+<li>Implementations of Voice AI using WebRTC can vary greatly; some common pitfalls include unnecessary renegotiations and improper TURN server configurations</li>
+
+
+
+<li>It&#8217;s important to enable echo cancellation and configure Opus bitrates correctly to avoid wasting resources and degrade audio quality</li>
+
+
+
+<li>Avoid using dual peer connections and negotiating video channels when unnecessary to simplify the architecture and reduce complexities</li>
+
+
+
+<li>To optimize your Voice AI, use rtcStats for diagnostics or seek expert consulting to refine your implementation</li>
+</ul>
+</div>
+
+
+
+<div class="wp-block-yoast-seo-table-of-contents yoast-table-of-contents"><h2>Table of contents</h2><ul><li><a href="https://bloggeek.me/voice-ai-best-practices/#h-voice-ai-webrtc-implementations-aren-t-equal">Voice AI WebRTC implementations aren’t equal</a></li><li><a href="https://bloggeek.me/voice-ai-best-practices/#h-single-peer-connection-vs-dual-peer-connection">Single peer connection vs dual peer connection</a></li><li><a href="https://bloggeek.me/voice-ai-best-practices/#h-unnecessary-renegotiations">Unnecessary renegotiations</a></li><li><a href="https://bloggeek.me/voice-ai-best-practices/#h-turn-servers-use">TURN servers use</a></li><li><a href="https://bloggeek.me/voice-ai-best-practices/#h-echo-cancellation-considerations">Echo cancellation considerations</a></li><li><a href="https://bloggeek.me/voice-ai-best-practices/#h-noise-suppression">Noise suppression</a></li><li><a href="https://bloggeek.me/voice-ai-best-practices/#h-opus-bitrates">Opus bitrates</a></li><li><a href="https://bloggeek.me/voice-ai-best-practices/#h-silence-management-and-bitrate">Silence management and bitrate</a></li><li><a href="https://bloggeek.me/voice-ai-best-practices/#h-disable-dtx">Disable DTX</a></li><li><a href="https://bloggeek.me/voice-ai-best-practices/#h-managing-the-ai-s-volume-level">Managing the AI’s volume level</a></li><li><a href="https://bloggeek.me/voice-ai-best-practices/#h-video-channels">Video channels</a></li><li><a href="https://bloggeek.me/voice-ai-best-practices/#h-how-many-data-channels">How many data channels?</a></li><li><a href="https://bloggeek.me/voice-ai-best-practices/#h-where-are-audio-quality-algorithms-needed">Where are audio quality algorithms needed</a></li><li><a href="https://bloggeek.me/voice-ai-best-practices/#h-is-there-a-need-for-an-sfu">Is there a need for an SFU?</a></li><li><a href="https://bloggeek.me/voice-ai-best-practices/#h-how-s-your-voice-ai-implementation-doing">How’s your Voice AI implementation doing?</a></li></ul></div>
+
+
+
+<h2 class="wp-block-heading" id="h-voice-ai-webrtc-implementations-aren-t-equal">Voice AI WebRTC implementations aren’t equal</h2>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77794" height="512" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-voiceai-equal-1024x512.jpg" width="1024" /></figure>
+
+
+
+<p>Here’s something we found surprising when we started looking at services: they aren’t created equal.</p>
+
+
+
+<p>At times, WebRTC may seem like a monolith of a thing with a single path of implementation for everything, but that’s far from true these days. After almost 15 years, WebRTC has grown in richness, capabilities and available options. The tools embodied inside WebRTC are optional to use and it is your role as a developer to pick and choose the ones for your application.</p>
+
+
+
+<p>In the next sections, I will review some of the design decisions we’ve seen, giving my own opinion about what’s best and why.</p>
+
+
+
+<h2 class="wp-block-heading" id="h-single-peer-connection-vs-dual-peer-connection">Single peer connection vs dual peer connection</h2>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77788" height="512" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-peer-connections-1024x512.jpg" width="1024" /></figure>
+
+
+
+<p>😐</p>
+
+
+
+<p>Many of the services use 2 peer connections instead of 1.</p>
+
+
+
+<p>For me, a 1:1 use case doesn’t need more than a single peer connection for voice and video communications.</p>
+
+
+
+<p>That said, in many cases, we see 2 separate peer connections in the implementation. One incoming and one outgoing. Why is that? Most likely because the infrastructure used was originally built and designed for group meetings, where at times it makes sense to split between the two.</p>
+
+
+
+<p>My preference? Use a single peer connection for a person to bot scenario. Feel free to use more in group scenarios &#8211; as you would with group meetings.</p>
+
+
+
+<p>The real harm in having 2 peer connections? Dealing with failures (on one of the connections or both) and making it harder to debug when there are issues &#8211; and there are always issues…</p>
+
+
+
+<p><strong>👉 From the rtcStats Showcase: </strong>Simli for example, uses <a href="https://rtcstats.com/share/kalOHx66sDgJor3DGt5jMkNYIXNP3TR-1HWgfp2EX4M">2 peer connections</a> whereas UneeQ uses <a href="https://rtcstats.com/share/A9OxxnV2j2YRPXFweaT3j9CjIV6a-MVnRSMXCcC7xR4">1 peer connection</a></p>
+
+
+
+<h2 class="wp-block-heading" id="h-unnecessary-renegotiations">Unnecessary renegotiations</h2>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77787" height="512" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-negotiations-1024x512.jpg" width="1024" /></figure>
+
+
+
+<p>For some reason, quite a few of the Voice AI services open an empty peer connection, and then renegotiate it multiple times until they get just what they need: an audio stream and data channels.</p>
+
+
+
+<p>This is likely due to the use and reliance of group conferencing technologies and connecting through an <a href="https://bloggeek.me/webrtcglossary/sfu/">SFU</a>, but in many ways is useless for Voice AI. When the only thing you speak to is a bot, a single offer answer round is enough &#8211; there’s no need to renegotiate and no one else is going to “barge” in and join this “meeting.</p>
+
+
+
+<p>Again &#8211; these layers just add up complexity where none is needed.</p>
+
+
+
+<p>My suggestion? Keep things simple where they are supposed to be simple.</p>
+
+
+
+<p><strong>👉 From the rtcStats Showcase: </strong>ElevenLabs <a href="https://staging.rtcstats.com/share/g5bIDxcaWp7JjEdfj9fcrsYb-Edljg3pRc1Gv-1tyfI">renegotiates streams multiple times</a></p>
+
+
+
+<h2 class="wp-block-heading" id="h-turn-servers-use">TURN servers use</h2>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77791" height="512" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-turn-servers-use-1024x512.jpg" width="1024" /></figure>
+
+
+
+<p>This one is just going back to basics. It seems like many Voice AI vendors are clueless about WebRTC, networking and NAT traversal. So the end result is quite a few instances where we’ve seen improper use of TURN servers and their configuration.</p>
+
+
+
+<p>What needs to be done here is to go back to basics and the usual <a href="https://bloggeek.me/webrtc-turn/">best practices of TURN configuration</a>.</p>
+
+
+
+<p>Here are things we’ve seen go wrong for Voice AI services:</p>
+
+
+
+<ul class="wp-block-list">
+<li>Not having any <a href="https://bloggeek.me/webrtcglossary/turn/">TURN</a> servers at all (while this might be reasonable for some rate use cases, for the most part, this just means less people being able to connect to your Voice AI interface). TURN can be discarded by those using <a href="https://bloggeek.me/webrtcglossary/ice-tcp/">ICE-TCP</a>, though that’s advanced and doesn’t seem to be deployed by Voice AI vendors yet</li>
+
+
+
+<li>Having a configuration with only TURN/UDP or only TURN/TCP or similar. Better to have all 3 alternatives: UDP, TCP and TLS</li>
+
+
+
+<li>Configuring more than a single <a href="https://bloggeek.me/webrtcglossary/stun/">STUN</a> server. Guess what? You don’t even need a single STUN server configured if you configure a TURN/UDP server…</li>
+
+
+
+<li>Getting connected to a distant TURN server. In some cases, I got connected via a US TURN server. I am located in Israel. Check your deployment and be sure to have TURN servers where your users are and that these TURN servers actually get allocated for the relevant sessions</li>
+</ul>
+
+
+
+<p><strong>👉 From the rtcStats Showcase: </strong><a href="https://rtcstats.com/share/jEgIDgO0G-9_a5E7xOFEDtaDkztO4sK3TYvxyV4r6q0">No TURN</a>, <a href="https://rtcstats.com/share/I0EvxPNdxQ9XcXFotrK4aBmorjVo-SFEuXPStUyiPsY/overview">no TURN TCP</a>, <a href="https://rtcstats.com/share/zEvVU57Tb2-24mReOan2iUPowIb9l6ICFAnJ_TORc1s">no TURN TLS</a>, <a href="https://rtcstats.com/share/g5bIDxcaWp7JjEdfj9fcrsYb-Edljg3pRc1Gv-1tyfI">wrong location</a>, …</p>
+
+
+
+<h2 class="wp-block-heading" id="h-echo-cancellation-considerations">Echo cancellation considerations</h2>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77785" height="512" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-echo-cancellation-1024x512.jpg" width="1024" /></figure>
+
+
+
+<p>In too many cases, we noticed that echo cancellation is disabled in the peer connection’s configuration for WebRTC.</p>
+
+
+
+<p>Frankly? It is hard to find a good reason for doing this.</p>
+
+
+
+<p>Talking to a voice bot still requires incoming audio and outgoing audio. Your users might be using separate microphones and speakers, where good <a href="https://bloggeek.me/webrtcglossary/aec/">acoustic echo cancellation</a> is needed.</p>
+
+
+
+<p>If there’s any echo spilling out into the audio, your speech to text service might be hard pressed to figure out what is being said &#8211; and you definitely don’t want that.</p>
+
+
+
+<p>Check if you disable echo cancellation and if you do &#8211; answer to yourself why are you doing that.</p>
+
+
+
+<p><strong>👉 From the rtcStats Showcase: </strong>Tavus <a href="https://rtcstats.com/share/NWxtUQqQVDUrAJFq-S8xbaRh0kpDrHq6Bk1IqmLSg4Q">disables AES</a></p>
+
+
+
+<h2 class="wp-block-heading" id="h-noise-suppression">Noise suppression</h2>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77790" height="512" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-suppression-1024x512.jpg" width="1024" /></figure>
+
+
+
+<p>When it comes to Voice AI, noise suppression is something that is done on the server side oftentimes. You can see <a href="https://krisp.ai/">Krisp</a> being added on the server side in many such cases.</p>
+
+
+
+<p>In many ways, noise suppression can be added on the client side as well with WebRTC. Krisp has a similar client-side implementation available, and so do others.</p>
+
+
+
+<p>Doing this client-side can save a bit on the computing power you’re spending on the servers.</p>
+
+
+
+<p>Which approach to take here? That’s up to you, but I wanted to share this option as well.</p>
+
+
+
+<h2 class="wp-block-heading" id="h-opus-bitrates">Opus bitrates</h2>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77782" height="512" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-bitrates-1024x512.jpg" width="1024" /></figure>
+
+
+
+<p>Same as with volume level, you decide on the server how to configure your Opus codec.</p>
+
+
+
+<p>And it is <a href="https://bloggeek.me/webrtcglossary/opus/">Opus</a> &#8211; we haven’t seen anyone use <a href="https://bloggeek.me/webrtcglossary/g711/">G.711</a> on the WebRTC-leg of their voice AI application.</p>
+
+
+
+<p>What’s interesting is getting 30, 60 or even higher kbps for incoming audio over Opus from a Voice AI service over WebRTC. Why? Because this is a waste of resources:</p>
+
+
+
+<ul class="wp-block-list">
+<li>Your service uses higher bitrate (and someone is paying for that bandwidth use)</li>
+
+
+
+<li>Constrained networks may have a hard time sending that bitrate towards the user</li>
+</ul>
+
+
+
+<p>Our approach? Keep it low. No need to send more than WebRTC is sending via Opus by default if your Voice AI service isn’t an opera singer.</p>
+
+
+
+<p>Be sure to also check your outgoing bitrate and to ask yourself if you’re sending too much there as well for some reason.</p>
+
+
+
+<p><strong>👉 From the rtcStats Showcase: </strong><a href="https://rtcstats.com/share/0kr-9Zlmno-nCmY8kROWmtvvUXN9Odg1gAk6Rko4A5c/streams">High audio bitrates</a>; <a href="https://rtcstats.com/share/A9OxxnV2j2YRPXFweaT3j9CjIV6a-MVnRSMXCcC7xR4/streams">extremely high audio bitrate</a></p>
+
+
+
+<h2 class="wp-block-heading" id="h-silence-management-and-bitrate">Silence management and bitrate</h2>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77789" height="512" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-silence-management-1024x512.jpg" width="1024" /></figure>
+
+
+
+<p id="h-when-people-don-t-speak-audio-codecs-have-the-option-of-marking-it-over-the-network-as-silence-silence-packets-are-smaller-making-for-lower-bitrate-use">When people don’t speak, audio codecs have the option of marking it over the network as silence. Silence packets are smaller, making for lower bitrate use.</p>
+
+
+
+<p>Interestingly, not many Voice AI services end up encoding with variable bitrate the speech that the bot generates. This means you’re getting “high” bitrate even when the Voice AI service is actually in listening mode and not generating any real audio of its own.</p>
+
+
+
+<p>Me? I am against waste. Especially when that waste is a single configuration parameter away from being resolved…</p>
+
+
+
+<p><strong>👉 From the rtcStats Showcase: </strong><a href="https://rtcstats.com/share/0kr-9Zlmno-nCmY8kROWmtvvUXN9Odg1gAk6Rko4A5c/streams">with silence management</a></p>
+
+
+
+<h2 class="wp-block-heading" id="h-disable-dtx">Disable DTX</h2>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77784" height="512" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-disable-dtx-1024x512.jpg" width="1024" /></figure>
+
+
+
+<p>Using <a href="https://bloggeek.me/webrtcglossary/dtx/">DTX</a> in group video calling is great. It reduces the number of packets sent from the media server in silence towards the users, which in turn reduces the network load on the server. It works great especially since in large groups, there’s one person speaker while others are just listening.</p>
+
+
+
+<p>In some cases, the use of DTX may even increase the latency of the response you will be receiving from the bot &#8211; something you definitely don’t want to occur.</p>
+
+
+
+<p>For a 1:1 session between a human and his bot it is usually best to leave voice activity detection to the server where more advanced methods can be used.</p>
+
+
+
+<p><strong>👉 From the rtcStats Showcase: </strong><a href="https://rtcstats.com/share/I0EvxPNdxQ9XcXFotrK4aBmorjVo-SFEuXPStUyiPsY">DTX is enabled</a></p>
+
+
+
+<h2 class="wp-block-heading" id="h-managing-the-ai-s-volume-level">Managing the AI’s volume level</h2>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77795" height="512" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-volume-level-1024x512.jpg" width="1024" /></figure>
+
+
+
+<p>The media pipeline in a WebRTC voice bot goes something like this:</p>
+
+
+
+<p>Human → Microphone → WebRTC → Network → Speech to Text → LLM → <strong>Text to Speech </strong>→ WebRTC → Network → Speaker → Human</p>
+
+
+
+<p>When you generate your own speech from the text, you also decide what volume to use prior to encoding that audio signal.</p>
+
+
+
+<p>In some cases, the volume level was higher than the default/average we usually expect on WebRTC. That’s because WebRTC tries to normalize volume levels captured by the microphone before encoding them.</p>
+
+
+
+<p>You have a decision to make here &#8211; do you want:</p>
+
+
+
+<ol class="wp-block-list">
+<li>Use a volume level that is lower than the default, making it hard for people to hear what’s being said</li>
+
+
+
+<li>Try keeping the normalized volume level used by WebRTC</li>
+
+
+
+<li>Go for a higher volume level</li>
+</ol>
+
+
+
+<p>When having a higher volume level, on one hand, I can hear better what’s being said. On another level, it might be too high a volume, akin to shouting or opening the car radio just to get bombarded by a high volume level.</p>
+
+
+
+<p>Figure out what’s your preference here. Me? I’d keep it to the normalized ones used by WebRTC.</p>
+
+
+
+<h2 class="wp-block-heading" id="h-video-channels">Video channels</h2>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77792" height="512" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-video-channels-1024x512.jpg" width="1024" /></figure>
+
+
+
+<p>Here’s something interesting…</p>
+
+
+
+<p>We saw Voice AI services that open up video channels. Where the scenario itself was pure voice &#8211; no video exchanged. In such a case, just don’t negotiate video channels. There’s no need for it.</p>
+
+
+
+<p>Another thing we noticed for Voice AI services where video was actually shared from the user’s side (for vision related scenarios) &#8211; sometimes, it was done using <a href="https://bloggeek.me/webrtcglossary/simulcast/">simulcast</a>. For the 1:1 nature of these scenarios &#8211; simulcast is likely hurting video quality and not improving it. Just don’t use simulcast if it isn’t needed (and it isn’t for 1:bot cases).</p>
+
+
+
+<p>And if your AI service can’t handle or deal with variable video bitrates, then you should probably solve that if user experience is important to you.</p>
+
+
+
+<p><strong>👉 From the rtcStats Showcase: </strong><a href="https://rtcstats.com/share/NWxtUQqQVDUrAJFq-S8xbaRh0kpDrHq6Bk1IqmLSg4Q">simulcast used</a>, <a href="https://rtcstats.com/share/A9OxxnV2j2YRPXFweaT3j9CjIV6a-MVnRSMXCcC7xR4">video resolution too high</a></p>
+
+
+
+<h2 class="wp-block-heading" id="h-how-many-data-channels">How many data channels?</h2>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77783" height="512" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-data-channels-1024x512.jpg" width="1024" /></figure>
+
+
+
+<p>Some Voice AI services don’t open data channels. Others open quite a few of them.</p>
+
+
+
+<p>It isn’t always apparent that these data channels are even needed &#8211; and oftentimes some of them weren’t used in our experiments.</p>
+
+
+
+<p>Check which data channels you open, with what configurations and most importantly &#8211; why…</p>
+
+
+
+<p><strong>👉 From the rtcStats Showcase: </strong><a href="https://rtcstats.com/share/zEvVU57Tb2-24mReOan2iUPowIb9l6ICFAnJ_TORc1s/overview">no data channels</a>, <a href="https://staging.rtcstats.com/share/RaO9hpEyOSryMm8mb7UklxMONyi3gRBMtw4MvQsvWes/overview">1 data channel</a>, <a href="https://rtcstats.com/share/jEgIDgO0G-9_a5E7xOFEDtaDkztO4sK3TYvxyV4r6q0/overview">4 data channels</a></p>
+
+
+
+<h2 class="wp-block-heading" id="h-where-are-audio-quality-algorithms-needed">Where are audio quality algorithms needed</h2>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77816" height="512" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-audio-quality-1024x512.jpg" width="1024" /></figure>
+
+
+
+<p>There are quite a few <a href="https://bloggeek.me/webrtc-media-resilience/">WebRTC media resilience algorithms and tools</a> one can use.</p>
+
+
+
+<p>From the human sender sound towards the LLM? They aren’t that important or interesting in that direction. The purpose isn’t for the audio to be easy for a person to listen to and understand but for the speech to text engine &#8211; and there, we have other algorithms to treat it at times.</p>
+
+
+
+<p>From the bot to the human, using these things definitely make sense &#8211; that’s where the person listening is who we care about. So using whatever we usually do for human to human communication would make sense here as well.</p>
+
+
+
+<p>Then there’s stereo… somehow, some Voice AI services negotiate stereo towards the user. Why would we need that for general purpose agentic use cases? I have no clue. These aren’t gaming services so the need likely doesn’t exist. Moreover, stereo takes more CPU to generate and more network to send &#8211; and many text to speech engines default to mono and not stereo anyway.</p>
+
+
+
+<p>Pick and choose here what you really need, and don’t blindly select algorithms that “improve quality” &#8211; they might hurt you instead of help you.</p>
+
+
+
+<h2 class="wp-block-heading" id="h-is-there-a-need-for-an-sfu">Is there a need for an SFU?</h2>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77786" height="512" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-need-sfu-1024x512.jpg" width="1024" /></figure>
+
+
+
+<p><a href="https://bloggeek.me/webrtcglossary/sfu/">SFUs</a> are used for group calling and live streaming. Most Voice AI services that use WebRTC for some reason go through an SFU. The reason is that this is how Video API vendors have set things up. Call it legacy. Call it the way we do things around here.</p>
+
+
+
+<p>Is that the best approach?</p>
+
+
+
+<p>Probably it isn’t if you’re doing a 1:bot conversation. In such a case, the SFU is just another extra leg in the session. One which adds latency and another moving part to be worried about.</p>
+
+
+
+<p>If you can work on an architecture that doesn’t need SFU it is likely a win for you.</p>
+
+
+
+<p>👉 You are still likely to need a media server/gateway to “translate” WebRTC to WebSocket to fit into the speech to text engine as many of these work with a WebSocket interface.</p>
+
+
+
+<h2 class="wp-block-heading" id="h-how-s-your-voice-ai-implementation-doing">How’s your Voice AI implementation doing?</h2>
+
+
+
+<figure class="wp-block-image size-large"><img alt="" class="wp-image-77780" height="512" src="https://bloggeek.me/wp-content/uploads/2026/03/202603-assistance-1024x512.jpg" width="1024" /></figure>
+
+
+
+<p>Voice AI is the thing these days. Everywhere we go, that’s the main theme and discussion. Focus for many WebRTC builders have shifted towards Voice AI.</p>
+
+
+
+<p>With this focus, there’s a plethora of solutions, demos, services and applications that use WebRTC in Voice AI services, but they aren’t created equal.</p>
+
+
+
+<p>For Voice AI you’ll need to deal with prompts, conversation drifts, hallucinations, evals, and a lot of other aspects related to the use of generative AI.</p>
+
+
+
+<p>The thing is, in many ways, we need to also take care of the basics of audio communications &#8211; make sure that the audio is sent and received in the best and most efficient way possible. Otherwise, our bot won’t work as expected (it will when you test it, but it won’t for some of your users).</p>
+
+
+
+<p><strong>The success of your Voice AI hinges on a stable, efficient audio transport layer</strong>. If you&#8217;ve identified potential pitfalls in TURN server use, echo cancellation, or Opus bitrates, it&#8217;s time to resolve your hidden implementation debt.</p>
+
+
+
+<p>You have two ways to ensure your WebRTC foundation is optimized for efficiency and reliability:</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Self-diagnose with rtcStats</strong>: Use our open-source and freemium <a href="http://rtcstats.com">rtcstats.com</a> combo to look &#8220;under the hood&#8221; of your WebRTC implementation and identify the critical optimizations needed. Start raising an eyebrow at your implementation today</li>
+
+
+
+<li><strong>Expert consulting</strong>: For hands-on help reviewing and perfecting your service, we provide consulting to ensure your bot works for all your users</li>
+</ul>
+
+
+
+<p>Ready to optimize? <a href="https://bloggeek.me/contact-me/">Reach out to me to learn more about consulting</a> or start exploring your data with <a href="http://rtcstats.com">rtcstats.com</a>.</p>
+<p>The post <a href="https://bloggeek.me/voice-ai-best-practices/">Voice AI best practices, based on rtcStats data</a> appeared first on <a href="https://bloggeek.me">BlogGeek.me</a>.</p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>100 webmaster questions | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://blakewatson.com/journal/100-webmaster-questions/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        100 webmaster questions
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <p>I stumbled across this set of questions on <a href="https://shellsharks.com/">Shellsharks’ website</a> (which is a cool personal site oozing with inspirational indie web vibes).  I thought it was a pretty cool, if not somewhat ridiculous thing to do. So here is my stab at answering 100 webmaster questions.</p>
+<p>If this is something you’d like to do too, I put <a href="https://gist.github.com/blakewatson/a91f64689936ad532c8ed23ac1bf0940">all of the questions in this GitHub gist</a> (with each question bolded in markdown) so you can easily copy and paste them into your own text editor.</p>
+<p><span class="number">1.</span> <strong>Please introduce yourself.</strong></p>
+<p>I’m Blake—web developer, designer, side-project enthusiast. I have a disability called <a href="https://www.curesma.org/about/">spinal muscular atrophy</a>. More <a href="https://blakewatson.com/about/">about me here</a>.</p>
+<p><span class="number">2.</span> <strong>How long have you been making websites?</strong></p>
+<p>Since the early 2000s. I bought my first domain, <a href="http://blakewatson.com/">blakewatson.com</a>, in 2005. That’s around the time I was learning how to code. But before that I used various WYSIWYG editors to make websites and host them on free hosting providers.</p>
+<p><span class="number">3.</span> <strong>And what got you into the hobby?</strong></p>
+<p><em>Hobby?</em> <em>Hobby?!</em> This is a way of life, thank you very much. :-)</p>
+<p>I also made it my career because I enjoy it so much. The way it started is that a friend of mine in high school had a website about sports and I started helping him with it.</p>
+<p><span class="number">4.</span> <strong>What kind of website are you most interested in?</strong></p>
+<p>Impossible to say. Sometimes you want websites to read. Sometimes you want websites that are more like applications or tools. It all depends.  I also like making a variety of different types of sites, be they <a href="https://htmlforpeople.com/">more content focused</a> or a <a href="https://blakewatson.com/journal/magnoliajs-2023-the-joys-of-home-cooked-apps/">home-cooked app</a>.</p>
+<p><span class="number">5.</span> <strong>What’s your workflow? do you plan your websites out thoroughly or do you come up with the design as you go along?</strong></p>
+<p>For most personal projects, the design tends to evolve as I go. For serious personal projects or for professional work, I will start from a mock-up, maybe even a high-fidelity one, before beginning to code. Either way, things tend to change during the coding stage.</p>
+<p><span class="number">6.</span> <strong>Please link to your biggest inspirations.</strong></p>
+<p>One of my earliest inspirations was <a href="https://zeldman.com/">Jeffery Zeldman</a>. I’m also inspired by the blogging machine that is <a href="https://chriscoyier.net/">Chris Coyier</a>—not only for his admirable persistence, but for his ongoing excitement for websites. And a newer inspiration of mine is <a href="https://neatnik.net/">Adam Newbold</a>, who <a href="https://blakewatson.com/journal/omg-lol-an-oasis-on-the-internet/">runs an empire</a> of <a href="https://home.omg.lol/">neat little web services</a>—mostly with vanilla PHP and SQLite!</p>
+<p><span class="number">7.</span> <strong>What’s your favorite part about making websites?</strong></p>
+<p>The tinkering. I love getting things to look and work <em>just right</em>. I love the freedom to create whatever I want and see it taking shape with every click of the refresh button.</p>
+<p><span class="number">8.</span> <strong>And the thing you struggle with the most?</strong></p>
+<p>I have too many ideas for projects and have ended up with a long list of domain names to which I’m too attached to let go, despite not actually using them.</p>
+<p><span class="number">9.</span> <strong>Do you keep the same layout on all of your pages? or do you use different ones?</strong></p>
+<p>Different pages have different layouts. On my personal site—as of the time of publishing—I mostly use a one-column layout. The exceptions are the homepage, the <a href="https://blakewatson.com/about">about page</a>, and the <a href="https://blakewatson.com/work">work page</a>, which all use multi-column layouts to better feature the content.</p>
+<p><span class="number">10.</span> <strong>How confident are you with css?</strong></p>
+<p>My CSS skills peaked in the late 2010s. At that time I was fairly confident in my abilities. I’ve since worked more on the web app side of things where the designs are not as striking and ambitious. Meanwhile, CSS has gained a lot of new powerful features. I’m slowly working my way through <a href="https://css-for-js.dev/">this course by Josh Comeau</a> because I’d like to get better!</p>
+<p><span class="number">11.</span> <strong>Do you know how to correctly use <code>&lt;dl&gt;</code>?</strong></p>
+<p>I think so. It’s an odd one and I’ve only legitimately needed it a handful of times.</p>
+<p><span class="number">12.</span> <strong>What is your favorite HTML element?</strong></p>
+<p>I think the <code>&lt;details&gt;</code>+<code>&lt;summary&gt;</code> elements are cool and provide a native way to show and hide content where previously one might have turned to JavaScript.</p>
+<p><span class="number">13.</span> <strong>If you’re making a new web page from scratch, what is the first thing you do?</strong></p>
+<p>In a terminal window, I’ll run a few commands like these:</p>
+<pre><code class="language-bash">mkdir site-name
+cd site-name
+git init
+npm init -y
+npm install --save-exact prettier
+</code></pre>
+<p>Then I either install <a href="https://www.11ty.dev/">Eleventy</a> if it’s a static site or <a href="https://fatfreeframework.com/3.9/home">Fat-Free Framework</a> if it’s a dynamic app with routing needs.</p>
+<p>If it’s a more serious project I may pop open <a href="https://excalidraw.com/">Excalidraw</a> or <a href="https://www.sketch.com/">Sketch</a> to do some design work.</p>
+<p>As far as an actual webpage itself. I have a snippet that expands into the most basic necessary HTML boilerplate to get started. That’s essentially a head section with the right meta tags. And I go ahead and link to a stylesheet and a script file. I may or may not use those, and I can delete as needed. Oftentimes, I will immediately grab my <a href="https://gist.github.com/blakewatson/784a13a3befdeb9e2757062db6fb66c6">spacing.css gist</a>, which is just a set of utility classes for margin and padding—something I’ve really found handy in pretty much any CSS system.</p>
+<p><span class="number">14.</span> <strong>Do you know JavaScript?</strong></p>
+<p>Yep! Well, I’m always learning. It was a JavaScript course in 2005 that taught me how to code web pages. I fell in love with HTML, CSS, and, yeah, JavaScript. I don’t like the abuse of JavaScript that plagues modern websites. But when used responsibly it can add useful features and fun to a web page.</p>
+<p><span class="number">15.</span> <strong>How about PHP?</strong></p>
+<p>It’s my go-to backend language. I wouldn’t say I <em>love</em> it but I like that it’s easily deployed to almost any hosting service and has a low barrier to entry. Of all the backend languages <a href="https://phpforpeople.com/">PHP is the people’s language</a>.</p>
+<p><span class="number">16.</span> <strong>Does your website have a theme that you stick to?</strong></p>
+<p>Kind of. Most of the themes center around web development, tech, disability, assistive technology, and personal projects.</p>
+<p><span class="number">17.</span> <strong>Are you more focused on content or design?</strong></p>
+<p>Content is first and the design is built around it. That said, I do have rather particular tastes and I want my website to look good—especially the typography.</p>
+<p><span class="number">18.</span> <strong>Do you own a domain name? if not, would you ever want to?</strong></p>
+<p>Heck yes! In 2025, I celebrated 20 years of my site being online at <a href="http://blakewatson.com/">blakewatson.com</a>. It lived on a few free-to-host subdomains before that. I think everyone should own a top-level domain name and host some kind of a personal website there. Don’t let social media be your only online representation. Take it back and control it yourself!</p>
+<p><span class="number">19.</span> <strong>What do you think of nostalgia-focused or “retro” websites?</strong></p>
+<p>Love them.</p>
+<p><span class="number">20.</span> <strong>Is your html valid? do you even check?</strong></p>
+<p>It probably is not. I’m going to go check it right now. I’ll be right back.</p>
+<p>As I suspected, the <a href="https://validator.w3.org/nu">W3 HTML checker</a> found many items worth calling out. Fortunately, it seems like most of them are not too bad.</p>
+<p>I use the code formatter <a href="https://prettier.io/">prettier</a> to format my code and it prefers the slash version for self closing tags. The HTML checker doesn’t really like that. Also I have some SVGs that are all trying to use the <code>id</code> attribute, <code>Shape</code>. I could probably fix that, but that doesn’t really seem too bad either.</p>
+<p>I think the most damning warning I got was that I have some <code>article</code> tags without any headings whatsoever. I believe this is my social feed in the sidebar—social posts don’t have titles. Also, the list of blog posts in the main column on the homepage uses <code>h1</code> for each <code>article</code> whereas the HTML checker prefers that I use <code>h2</code> or something lower for better screen reader performance.</p>
+<p><span class="number">21.</span> <strong>What are your opinion on buttons and banners?</strong></p>
+<p>If this question is talking about buttons and banners that harken back to older days on the web, then yes, love them. Very cool.</p>
+<p>If “banners” refers to big ads then absolutely not get those the hell away from me.</p>
+<p><span class="number">22.</span> <strong>What do you think of button walls in particular?</strong></p>
+<p>I’m kind of jealous of the people who have collected buttons and made button walls. I kinda want to do that even though it doesn’t fit the aesthetic of my website very well.</p>
+<p><span class="number">23.</span> <strong>If you started over again, would you make something similar or completely different?</strong></p>
+<p>I like my existing design, but if I were to start over, I would be tempted to make it a bit more quirky and whimsical.</p>
+<p><span class="number">24.</span> <strong>Are you envious of other people’s websites?</strong></p>
+<p>All the time. It can be for different reasons. Sometimes the design is just so good. Or maybe it has a cool animation or whimsical interaction that’s fun. Sometimes it’s just the idea that the person has been running and updating their website consistently for many, many years which also makes me jealous.</p>
+<p><span class="number">25.</span> <strong>What text editor do you use?</strong></p>
+<p>This stuff changes all the time. For writing, I use <a href="https://ia.net/writer">iA Writer</a> mostly, although lately I will sometimes draft in <a href="https://obsidian.md/">Obsidian</a>. For code, I use <a href="https://code.visualstudio.com/">Visual Studio Code</a>. It really is a nice editor with some great affordances for accessibility. I’m still considering trying some of its variants such as <a href="https://cursor.com/">Cursor</a>, and I am also interested in <a href="https://zed.dev/">Zed</a>. But VS Code has a lot of extensions that I have become reliant on, making it more difficult to switch to something else. This is somewhat silly, but I still pay for a yearly license for <a href="https://nova.app/">Nova by Panic</a> because, even though I don’t use it much, I want it to be successful.</p>
+<p><span class="number">26.</span> <strong>Why do you use that one?</strong></p>
+<p>iA Writer because it has a minimal interface and a minimal amount of settings for me to tweak, which is something I will do endlessly rather than the real work of writing. Whenever I need to get some honest-to-goodness writing done, I have to use iA Writer.</p>
+<p>For coding, I like VS Code for its AI autocomplete and it’s historically been very accessible for me—large scrollbars, tons of customizability, etc. There are a lot of extensions that make my life easier. One in particular is <a href="https://www.cursorless.org/">Cursorless</a>. It’s kind of hard to explain but this tool really empowers me to code by voice.</p>
+<p><span class="number">27.</span> <strong>Do you host your image files on your web server, or on another host?</strong></p>
+<p>For most of my projects, they get hosted on the server alongside the rest of my website. That said, my main personal site, <a href="http://blakewatson.com/">blakewatson.com</a>, has Cloudflare sitting in front of it. So it’s caching my website on the “edge” or whatever.</p>
+<p><span class="number">28.</span> <strong>This might not be relevant to you, but what’s your opinion on the neocities vs. nekoweb debate?</strong></p>
+<p>I love Neocities! My (totally free) web book, <a href="https://htmlforpeople.com/">HTML for People</a>, uses it as the static website host for people building their first website by hand with HTML. I don’t know much about Nekoweb, but I mean it looks cool too. I say use whichever you want. If there’s a debate, I don’t know anything about it. 😅</p>
+<p><span class="number">29.</span> <strong>How much server space would you estimate your main website takes up?</strong></p>
+<p>Thanks to <a href="http://nearlyfreespeech.net/">NearlyFreeSpeech.NET</a>’s very helpful dashboard, I can tell you the exact number of bytes that <a href="http://blakewatson.com/">blakewatson.com</a> takes up.</p>
+<p>1,174,319,104</p>
+<p><span class="number">30.</span> <strong>Do you keep local backups of your files?</strong></p>
+<p>Kind of.  Most of my website is in a git repository and I have a local version that lives on my computer—in my Dropbox folder, which gives me another layer of backup. But not every file on my website is in the repo because my website has been around for a while and is now a sprawling organism of its own. I take an occasional local backup of everything, but I have a task that runs weekly and backs up my entire website to <a href="https://www.backblaze.com/cloud-storage">Backblaze B2</a>.</p>
+<p><span class="number">31.</span> <strong>Do you prefer simple or highly visual websites?</strong></p>
+<p>I think both can be really cool. If it’s a content website and I’m reading it, I prefer simple. My own stuff also usually tends to be on the simpler side. It depends on the project. But my personal style leans toward minimalism even when I’m trying to be more visual. My personal website is meant to be very easy to read but with a little bit of design flair.</p>
+<p>But there are times when highly visual websites are what you need and I appreciate them.</p>
+<p><span class="number">32.</span> <strong>Do you stick to certain colors? do you do that on purpose, or is it your subconscious?</strong></p>
+<p>I use a handful of colors on <a href="http://blakewatson.com/">blakewatson.com</a>. It’s part of (what I hope is) a cohesive color scheme.</p>
+<p><span class="number">33.</span> <strong>Have you ever thought about quitting? why?</strong></p>
+<p>lol, as if.</p>
+<p><span class="number">34.</span> <strong>Do you have many webmaster friends, or is it a solitary hobby?</strong></p>
+<p>I mentioned previously that the way I got started was helping a friend with his website in high school. I didn’t really know how to code HTML at that time. In college I started learning how to code. Back when I was just getting started in the mid-2000s, it was a pretty solitary thing. I didn’t know many people in web development, but I longed for <em>someone</em> to talk to about it. I ultimately found people on Twitter and elsewhere. I have quite a few internet buddies who make websites these days. And I work as a web developer so I have professional colleagues as well.</p>
+<p>I ultimately roped <a href="https://www.mattwatson.org/blog/20150610-introducing-the-internet/">my brother</a> into it. :-)</p>
+<p><span class="number">35.</span> <strong>Do people in your real life know about your website?</strong></p>
+<p>I’d say most of them know I have one, though most of them never read it.</p>
+<p><span class="number">36.</span> <strong>Do you update your website very often? how often is “very often”?</strong></p>
+<p>For a long time, updating my website meant writing three to five blog posts—or articles as I like to call them—per year. But in 2023 I noticed I had accidentally started writing one article every month. Once I noticed that, I kept the streak going and I’m writing this very sentence on March 29, 2026 in order to keep the streak alive! Earlier this year, I added link posts to my site as well in an attempt to update it more often.</p>
+<p>I don’t quite count this as updating my site, but technically all of my Mastodon posts get aggregated to my site and show up in something called the <a href="https://blakewatson.com/microblog/">microblog</a>. This all happens automatically, done by an hourly script.</p>
+<p><span class="number">37.</span> <strong>And the overall design, do you change that much? why or why not?</strong></p>
+<p>At this point, I’d estimate that I change it every four or five years. As in big redesigns, I mean. I make smaller tweaks more often. I do enjoy tinkering with styles, but I also like to leave it be for long stretches. If I see something that annoys me, it’ll pop up on my radar and eventually I’ll be so annoyed by it that I’ll go in and change it.</p>
+<p><span class="number">38.</span> <strong>Is your website more you-focused, hobby-focused, or outside world-focused?</strong></p>
+<p>I tend to write about the intersection of technology and disability. I write about web development, assistive tech, and the rare introspective personal piece.</p>
+<p><span class="number">39.</span> <strong>Do you do web design professionally?</strong></p>
+<p>Yes.</p>
+<p><span class="number">40.</span> <strong>If not, would you like to? and if you’re comfortable answering, what do you do for work?</strong></p>
+<p>I started doing freelance work almost immediately after I learned how to write HTML and CSS. I count 2007 as my first year of doing professional web design. All the while I was looking for a full-time position. I finally found one in 2015 and I joined a local ad agency, <a href="https://madg.com/">Mad Genius</a>, as an interactive designer.</p>
+<p>During that stint, I became a better JavaScript and PHP developer. And I ended up seeking out a more development-heavy role. In 2019, I joined MRI Technologies, working on <a href="https://blakewatson.com/work/cosmic/">internal web applications for NASA</a>.</p>
+<p><span class="number">41.</span> <strong>Do you communicate with people by email very much?</strong></p>
+<p>I’d say most of my email is business, but I do interact with users of my various <a href="https://blakewatson.com/projects/">side projects</a> by email. Lately I’ve been getting a lot of feature requests for various projects.</p>
+<p><span class="number">42.</span> <strong>Some people reject social media and use websites as a replacement. do you keep social media outside of your website?</strong></p>
+<p>I used to use Twitter, but I quit after third-party apps quit working (soon after the Elon takeover). I switched over to Mastodon and as I said previously I set up my website to vacuum those posts up and keep a canonical archive of them.</p>
+<p><span class="number">43.</span> <strong>How about instant messengers? do you use a mainstream one like discord or telegram? or something like matrix? do you avoid them?</strong></p>
+<p>My primary social chat app is Discord. I’m a moderator of the <a href="https://blakewatson.com/journal/sma-chat-discord-server/">SMA Chat server</a>, and I use it to chat with both online buddies and strangers that have similar interests. I’m also in a couple of community Slack groups, although I don’t enjoy that app as much as I used to. Perhaps the silliest one I use is one that my brother and I <a href="https://blakewatson.com/journal/building-our-own-private-discord-knockoff/">made just for ourselves</a>, which we use daily to chat with each other.</p>
+<p><span class="number">44.</span> <strong>Do you listen to music while you work on websites? if so, what kinds of artists?</strong></p>
+<p>I go back and forth on this. Sometimes I prefer music, sometimes silence, sometimes I will turn active noise cancelling on and not play any music at all. When I’m working, I will sometimes listen to <a href="https://www.youtube.com/watch?v=jfKfPfyJRdk">lo-fi</a> or <a href="https://somafm.com/">SomaFM</a> for instrumental background music. Other times, I will poke through my music library and put on an album (other than a few exceptions, I’ve grown to dislike playlists and prefer listening to full albums).</p>
+<p>I don’t want to get into a long answer about genres and artists here, but if you’re really curious, you can <a href="https://www.last.fm/user/blakewatson">check out my Last.fm profile</a>.</p>
+<p><span class="number">45.</span> <strong>Do you keep everything you make on one website, or do you have more than one?</strong></p>
+<p>I have… so many. 😅</p>
+<p><span class="number">46.</span> <strong>On a similar note, do you keep to one topic on your site, or many?</strong></p>
+<p>Usually a handful of topics, as I said previously.</p>
+<p><span class="number">47.</span> <strong>Do you present your real self, or at least try? or do you construct a persona on purpose?</strong></p>
+<p>I’m jealous of people who have pseudonyms or can write somewhat anonymously, but for better or worse, I’m me just about everywhere on the internet. Part of the reason for that is that I’m not creative enough to come up with cool usernames. The other reason is because I enjoy sharing things I make, so I’m no good at being anonymous.</p>
+<p><span class="number">48.</span> <strong>Have you ever made a good friend thanks to your website?</strong></p>
+<p>I don’t know if I’ve made a good friend directly because of my website, but I’ve definitely made a lot of connections that way.</p>
+<p><span class="number">49.</span> <strong>Are you happy with the way html and css currently work?</strong></p>
+<p>I’m gonna say yes because I can’t think of a better alternative. My CSS skills peaked in the late 2010s, so I’ve been trying to learn about all the new techniques and best practices.</p>
+<p><span class="number">50.</span> <strong>What are practices that you think people should avoid?</strong></p>
+<p>There are a lot of anti-patterns or deceptive patterns that should be avoided. Rather than make a list here, I’ll just say that if you follow the goal to respect your reader in all facets of your website, you’ll do fine. The <a href="https://en.wikipedia.org/wiki/Golden_Rule">golden rule</a> is your friend here.</p>
+<p><span class="number">51.</span> <strong>What about underutilized practices, or things you think people should do more?</strong></p>
+<p>I think most people who have a website do this already, but if you don’t have an RSS feed, you should try to include one. There are so many people out there consuming RSS.</p>
+<p><span class="number">52.</span> <strong>Do you use a lot of semantic html? or are you guilty of generic structure?</strong></p>
+<p>I do endeavor to write semantic HTML by using the proper tags for the different pieces of my site. That said, when layout gets complicated, I’m not afraid to turn to a nest of divs if needed.</p>
+<p><span class="number">53.</span> <strong>Do you consider different browsers?</strong></p>
+<p>I am a multi-browser user, so I will typically check my site and all of the ones I use. But yes, in general I try to make my website work on every browser I can. That said, I don’t think a website has to look exactly the same in every browser. So if something’s not broken, I may let small inconsistencies go unchanged.</p>
+<p><span class="number">54.</span> <strong>Speaking of, what’s your preferred browser? convince your readers why they should use it.</strong></p>
+<p>I’m not here to prescribe a browser to people. Use what you want. I like Firefox. I use Chrome for work and for installable applications. I also use Vivaldi. I’ve got my eye on <a href="https://ladybird.org/">Ladybird</a> as I think it’s really cool that someone is working on a completely independent browser engine.</p>
+<p><span class="number">55.</span> <strong>And what os are you on?</strong></p>
+<p>macOS</p>
+<p><span class="number">56.</span> <strong>Do you have a strong opinion on that, or do you just happen to use it?</strong></p>
+<p>I do have strong opinions about macOS. I think it’s the most accessibility friendly operating system out there today. This wasn’t always the case, but I’ve personally been involved in giving feedback to Apple about accessibility. And they listened and implemented things that many of us disabled users need.</p>
+<p><span class="number">57.</span> <strong>Are your websites mobile-friendly?</strong></p>
+<p>I definitely try to make them mobile friendly. I don’t use a phone much myself (due to not being able to physically manipulate it), so my mobile design skills are a little rusty, but I strive for them to be readable and usable on mobile.</p>
+<p><span class="number">58.</span> <strong>What are your thoughts on autoplay?</strong></p>
+<p>I like it if I consent to it, otherwise I hate it.</p>
+<p><span class="number">59.</span> <strong>What are your thoughts on webrings? are you in any?</strong></p>
+<p>I think they are really cool and I need to get in on this but haven’t yet.</p>
+<p><span class="number">60.</span> <strong>Do you have any web shrines? what do you like to see in that sort of page?</strong></p>
+<p>I’m not sure I know what that is, but it sounds really cool lol.</p>
+<p><span class="number">61.</span> <strong>Are your websites “cliche,” in your opinion?</strong></p>
+<p>I think it used to be. I even wrote a post about <a href="https://blakewatson.com/journal/this-sites-design-is-not-original/">my site not being original</a>, but I’ve done a lot of work on it over the years and I think it’s more unique than it used to be. Still somewhat of a cliche web developer blog though.</p>
+<p><span class="number">62.</span> <strong>What is your ideal website? are you striving for that, or for something else?</strong></p>
+<p>There’s no ideal website. I think of my personal site as an expression of me and I work on it to that end.</p>
+<p><span class="number">63.</span> <strong>Are you an artist? do you draw or design your own assets?</strong></p>
+<p>Everyone’s an artist. Now, I’m not particularly good at drawing but I will occasionally create my own assets.</p>
+<p><span class="number">64.</span> <strong>What are your favorite resource sites?</strong></p>
+<p>I’m not sure what is meant by resource sites, but I can give you a short list of some of the documentation and utilities I frequently find myself using.</p>
+<ul>
+<li><a href="https://developer.mozilla.org/">MDN</a>. This is basically the developer manual for the World Wide Web.</li>
+<li>For years, I followed <a href="https://css-tricks.com/">CSS-Tricks</a>. It went dormant for a while but it’s back these days.</li>
+<li><a href="https://practicaltypography.com/">Butterick’s Practical Typography</a>. Most websites are text-based and you can improve your site’s design beyond probably 99% of websites out there by applying some sound typographic principles to it.</li>
+<li><a href="https://coolors.co/contrast-checker">Color contrast checker by Coolors</a>.  When you’re designing for the web, you want to make sure you are using an appropriate amount of contrast, especially when it comes to text. Whether your reader has low vision or they’re someone who spends a lot of time staring at a screen, making your design easy to see is good for everyone.</li>
+<li><a href="https://tinypng.com/">tinify</a>.  There are a million ways to do this, but when you are putting images on your website, you want to compress them so that they don’t take a ton of bandwidth. This is the dead simplest way to do that.</li>
+<li>Other people’s personal websites. Not exactly a resources site <em>per se</em>, but if you try hard and believe in yourself, <em>every</em> other website is a resources site. :-)</li>
+<li>ChatGPT/Claude. I know I’ll get hate for this one, but sometimes if I’m trying to understand a particular problem or browser API, I can often get a tailored explanation with an example from AI. Now, I don’t take these 100% at face value, and I will double check things with MDN web docs or elsewhere but AI can be incredibly helpful for learning if used for that purpose.</li>
+</ul>
+<p><span class="number">65.</span> <strong>Is there a habit you just can’t get away from no matter how hard you try?</strong></p>
+<ul>
+<li>Growing a stylesheet until it becomes a big incomprehensible mess.</li>
+<li>Using a lot of hedging language in my writing (ie, <em>I think</em>, <em>probably</em>, <em>maybe</em>, <em>kind of</em>, <em>one of the most</em>, etc).</li>
+<li>Buying unnecessary domain names.</li>
+</ul>
+<p><span class="number">66.</span> <strong>What’s your biggest advice for a new webmaster?</strong></p>
+<p>Don’t be afraid to ship. Your website doesn’t have to be perfect to be on the web.</p>
+<p><span class="number">67.</span> <strong>Do you keep all your styling in css? or do you hard-code some?</strong></p>
+<p>I use a mix of style sheet and inline styles if that’s what you mean.</p>
+<p><span class="number">68.</span> <strong>What do you think of frameset layouts?</strong></p>
+<p>You probably shouldn’t use them, but I do find them nostalgic.</p>
+<p><span class="number">69.</span> <strong>How about table-based layouts?</strong></p>
+<p>No.</p>
+<p><span class="number">70.</span> <strong>Do you subscribe to the ideas of “one-column”, “two-column” and “three-column” layouts? do you use any of these?</strong></p>
+<p>All of the above, depending on the situation.</p>
+<p><span class="number">71.</span> <strong>Do you spend longer on the html or the css?</strong></p>
+<p>CSS for sure.</p>
+<p><img alt="This is the scene from Family Guy where Peter Griffin is yanking on the blinds over and over and over. It's captioned, CSS." src="https://blakewatson.com/uploads/2026/css-blinds.gif" /></p>
+<p><span class="number">72.</span> <strong>Have you ever made a page with no css? it’s useful for your thoughts.</strong></p>
+<p>When my site was using WordPress I wrote some code that would automatically omit the CSS on <a href="https://css-naked-day.org/">CSS Naked Day</a>. My website now uses Eleventy, but I can probably set up a script to do this.</p>
+<p><span class="number">73.</span> <strong>Do you ever find yourself making layouts with nothing to put on them? or do you only make layouts when the need arises?</strong></p>
+<p>Only when the need arises.</p>
+<p><span class="number">74.</span> <strong>Would you consider yourself a beginner? or advanced? somewhere in the middle?</strong></p>
+<p>Advanced, but always learning.</p>
+<p><span class="number">75.</span> <strong>Do you have a habit of looking at the source code of websites you visit?</strong></p>
+<p>Sometimes. This used to be easier before frontend build tools pervaded the field.</p>
+<p><span class="number">76.</span> <strong>How did you learn how to make websites?</strong></p>
+<p>I started by using WYSIWYG website builders. But they were frustrating. When I was in college, I took a JavaScript course. In that course I learned some HTML and CSS. From there, I went off on my own learning path, often using the then-popular <a href="https://www.w3schools.com/">W3Schools</a> which, despite the <a href="https://www.w3fools.com/">valid criticism</a> at the time, presented web technologies in a straightforward, digestible format.</p>
+<p><span class="number">77.</span> <strong>Do you ever force elements to do things they’re not supposed to?</strong></p>
+<p><img alt="Animated gif of the kid from The Sixth Sense laying in his bed saying, 'all the time.'" src="https://blakewatson.com/uploads/2026/all-the-time.gif" /></p>
+<p><span class="number">78.</span> <strong>Thoughts on floating elements?</strong></p>
+<p>If you want to, go for it.</p>
+<p><span class="number">79.</span> <strong>When you’re sizing stuff, what do you use first? do you use px, em, %, or something else?</strong></p>
+<p>I use a mix of <code>px</code>, <code>em</code> and <code>rem</code>.  Which one I use depends on whether I want it to change based on the font size or not.</p>
+<p><span class="number">80.</span> <strong>Do you have a favorite font?</strong></p>
+<p>There are too many fonts I love to have a favorite, but let me shout out a few.</p>
+<ul>
+<li>Helvetica. It’s possibly the most overused font of all time. However, it coincides with a design style I love and my own tastes were highly inspired by the <a href="https://www.hustwit.com/helvetica">documentary of the same name</a>.</li>
+<li>Georgia. This is my favorite system font. There are better options for setting body text if you have access to web fonts, but despite that, Georgia remains a beautiful, eminently readable option.</li>
+<li><a href="https://www.typography.com/fonts/operator/styles/operatormono">Operator Mono</a>. This might be the first font I ever purchased. I look at code daily and, though I now have a large collection of monospaced fonts I cycle through, Operator Mono is a mainstay for me.</li>
+<li><a href="https://github.com/iaolo/iA-Fonts">iA Writer Duo</a>. This is my favorite font for writing. It’s a font shipped in iA Writer that riffs off of <a href="https://github.com/IBM/plex">IBM Plex Mono</a>, but allows smaller and larger characters like <code>i</code> and <code>m</code> to break the monospaced grid by using less or more space respectively. It’s one of the <a href="https://blakewatson.com/journal/almost-monospaced-the-perfect-fonts-for-writing/">almost-monospaced fonts</a> that I wrote about on my website. Previously, iA Writer shipped with a font called <a href="https://boldmonday.com/typeface/nitti/">Nitti Light</a> from Bold Monday. It became somewhat of a crowd favorite for writing. As it happens, Bold Monday had a hand in designing IBM Plex Mono. So, iA Writer Duo still has some of Nitti’s DNA, which I love.</li>
+<li><a href="https://klim.co.nz/collections/soehne/">Söhne</a>.  As of the time of this writing, this is the typeface I use on my website. This font appeals to my affinity for the international typographic style—an affinity I developed in part because of the Helvetica documentary.</li>
+<li><a href="https://simplebits.shop/collections/fonts">SimpleBits</a>. Not a font, but a whole collection of them. If you want style on the cheap, these fonts are affordable and full of quirky personality.</li>
+<li><a href="https://fontawesome.com/">Font Awesome</a>. This stretches the idea of what a font can be. I love using these self-proclaimed awesome icons in my various websites and apps.</li>
+</ul>
+<p><span class="number">81.</span> <strong>Would you run a website with another person? how would that work?</strong></p>
+<p>There are a small handful of websites I run with my brother. I think collaborating on websites is a lot of fun. It can work differently depending on responsibilities, but to answer the question of how it would work, I think as long as everyone communicates and has access to a git repository then the sky’s the limit.</p>
+<p><span class="number">82.</span> <strong>Do you surf the web to find new personal websites very often?</strong></p>
+<p>I probably visit a new-to-me personal website near daily. Usually this comes from visiting Hacker News, Mastodon, or reading RSS feeds.</p>
+<p><span class="number">83.</span> <strong>Do you bookmark other people’s websites? how would you feel knowing someone else bookmarked yours?</strong></p>
+<p>I have <a href="https://blakewatson.com/journal/my-home-cooked-app-for-online-bookmarks/">my own little bookmarking tool</a> online and I do frequently save websites. I would be totally stoked to know that someone saved anything on my site for future reference.</p>
+<p><span class="number">84.</span> <strong>What do you want people to be most impressed with when they see your website?</strong></p>
+<p>Umm… I don’t know. I just want them to find something interesting.</p>
+<p><span class="number">85.</span> <strong>Are you interested in technology outside of websites? do you collect?</strong></p>
+<p>I collect a lot of tech intentionally, but I kind of feel bad about the trail of e-waste I leave behind from buying things like computer accessories and AirPods and such.</p>
+<p>That being said, a few days ago I impulse purchased a <a href="https://www.youtube.com/watch?v=C63pzFyoux4">Casio F-91W</a>. This is basically what you picture when you think of <em>cheap digital wristwatch</em>. I’m pretty sure I had one as a kid. I was watching a YouTube video about it and became overwhelmed with nostalgia and just had to get one.</p>
+<p><span class="number">86.</span> <strong>How often and for how long are you online?</strong></p>
+<p>Too damn often for too damn long. Because of my disability, almost everything I do is on a computer. And the internet is a huge part of it. Browsing, watching, reading, building, publishing, chatting, collaborating, commiserating—<a href="https://www.youtube.com/watch?v=k1BneeJTDcU">it’s all here</a>.</p>
+<p><span class="number">87.</span> <strong>When it comes to your website, who is your target audience?</strong></p>
+<p>I write about what’s interesting to me and if anyone else is into it too, that’s cool.</p>
+<p><span class="number">88.</span> <strong>Have you ever been interested in xhtml?</strong></p>
+<p><code>&lt;briefly /&gt;</code></p>
+<p><span class="number">89.</span> <strong>Do you program in general? have you ever written a program for use with or on your website, not counting simple javascript?</strong></p>
+<p>Imposter Syndrome notwithstanding, I’d call myself a programmer. I’ve written a lot of JavaScript, in particular <a href="https://www.watsonbrosgames.com/">games</a> and more advanced applications. I also write a bit of PHP and when I was taking a Visual Basic course back in college, I made a Yahtzee clone. In fact, that Yahtzee game written in Visual Basic 6 ultimately became a JavaScript game called <a href="https://blakewatson.com/rdo/">Royal Dice Online</a>. The latest incarnation of it is <a href="https://blakewatson.com/rdo3/">Royal Dice Online 3</a>.</p>
+<p>It’s pretty dated now, but I also have this <a href="https://blakewatson.com/dice-roller/">free dice roller</a> on my website. I host an <a href="https://blakewatson.com/initiative/">initiative tracker</a> for playing D&amp;D and other TTRPGs.</p>
+<p><span class="number">90.</span> <strong>Speaking of programs that help you make websites, what do you think of static site generators (ssgs)? have you ever used one?</strong></p>
+<p>Yes, I’ve used several of these and I think I’ve found my go-to in <a href="https://www.11ty.dev/">Eleventy</a> (ie, <a href="https://www.11ty.dev/blog/build-awesome/">Build Awesome</a>). For the most part, I love static site generators. Static sites are much more simple and affordable to host compared to dynamic websites.</p>
+<p>Well, I say that but there are some assumptions hidden in that statement. You can, and people do, host perfectly fine dynamic websites that load quickly and are straightforward to host. You can <a href="https://phpforpeople.com/">write some vanilla PHP</a> and as long as you don’t do a ton of work on each request, your site will probably be fine even running on a cheap shared hosting provider like my beloved <a href="https://www.nearlyfreespeech.net/">NFSN</a>.</p>
+<p>That said, behemoth systems like WordPress, which run a lot of code and initiate dozens of queries to a database, can slow things down dramatically without proper caching and maintenance. Sure, they do a lot for the operator of the website. You can log in, make updates to your site, write new posts, upload media—it’s a trade-off.</p>
+<p>But if you are able to write some code, I think a static site generator is a good option to use until you find that you really need a dynamic website. Out of the box, you will have a fast website with little need for caching. Your website will be extremely portable, meaning you can move to any hosting service quickly. You are also liberated from needing to do much server maintenance. You’re not going to be worried about PHP or MySQL versions when you are hosting a static website.</p>
+<p>In short, static sites rule and static site generators are awesome.</p>
+<p><span class="number">91.</span> <strong>Do you keep a hitcounter? why or why not?</strong></p>
+<p>I should add one of those as it would be pretty cool. But while I don’t have a hit counter, I do have a bespoke like button on every article. So I have this wired up with a <a href="https://workers.cloudflare.com/">Cloudflare Worker</a>. So whenever someone clicks the button, the worker will update the number of likes for that article in its key-value storage. When someone loads one of my articles, the page will fetch the like count for that article and show it next to the button.</p>
+<p><span class="number">92.</span> <strong>Do you frequent forums? which ones?</strong></p>
+<p>I mostly stick with Discord servers these days, but I hate that so much good discussion is hidden behind the walls of Discord. Forums once were, and to some degree still are, a great way to pass along knowledge on the internet.</p>
+<p><span class="number">93.</span> <strong>Do you write your page content directly into the editor, or do you prepare it elsewhere, like a text document or a word document?</strong></p>
+<p>I typically write in iA Writer or a note-taking app like Obsidian. Since I’m using a static site generator and my content is in markdown files, I can use Writer to edit the file directly in my repo.</p>
+<p><span class="number">94.</span> <strong>Do you think you appear cool to others? a more accurate answer now: do other people ever say you’re cool?</strong></p>
+<p>I don’t think I’ve ever been cool and I don’t think I ever will be lol. I think other people are impressed with what I have accomplished given the fact that I have a severe mobility impairment. Of course, to me this is just what life is like. I don’t always see myself as achieving some sort of grand accomplishment.</p>
+<p>That being said, I <em>am</em> proud of <a href="https://blakewatson.com/projects/">some of the things I’ve made</a> over the years. And when I look back at my <a href="https://blakewatson.com/journal/a-decade-of-employment/">unemployed self during the dark years when I was job hunting</a>, I get vaguely teary-eyed thinking about how far I’ve come after nearly giving up.</p>
+<p><span class="number">95.</span> <strong>Are you embarrassed of your old work? have you ever deleted everything out of shame?</strong></p>
+<p>I’ve deleted old blogs or blog posts out of shame, yes. 18-to-21-year-old me really had no business writing anything and putting it on the internet lol.</p>
+<p><span class="number">96.</span> <strong>Would you close down your website if you couldn’t update it, or would you leave an archive?</strong></p>
+<p>I very much would like it to be archived. In fact, I think it <em>will</em> be mostly archived on the <a href="https://web.archive.org/">Wayback Machine</a>, but I really wish there was a way I could pay for eternal hosting or some way to guarantee that my site would outlive me for at least a few decades.</p>
+<p><span class="number">97.</span> <strong>So you reveal a lot about yourself on your website? or are you more secretive?</strong></p>
+<p>I’m pretty much an open book. I probably reveal too much. Oh well.</p>
+<p><span class="number">98.</span> <strong>Are you willing to reveal who your best online friend is, and/or if they have a website?</strong></p>
+<p>This is hard to say, but I’m just going to call out my brother here. Despite the fact that we currently live together, I chat with this dude every day on our <a href="https://blakewatson.com/journal/building-our-own-private-discord-knockoff/">home-cooked chat app</a>, like I mentioned. He’s been doing the at-least-one-post-a-month blogging challenge with me. You can visit his website here.</p>
+<p><a href="https://www.mattwatson.org/">https://www.mattwatson.org/</a></p>
+<p><span class="number">99.</span> <strong>And do you optimize the images on your website?</strong></p>
+<p>I see we’re just asking any old random thing for the penultimate question, huh? Lol. But yes, I typically optimize images by resizing them down to around a max width of 1400 to 1600 pixels. Then I run them through some kind of compression, whether it’s the web utility I mentioned earlier, <a href="https://tinypng.com/">tinify</a>, or an app I have on my machine like <a href="https://realmacsoftware.com/squash/">Squash</a>.</p>
+<p><span class="number">100.</span> <strong>We’re out of time! how do you feel after answering 100 questions? … other than exhausted.</strong></p>
+<p>I spaced these answers out over several weeks, but did the second half of them in one mad dash. It wasn’t too bad. I do think the questions could have been ordered differently. I suppose I could take the time to do that, but I’m much too lazy.</p>
+<p>You can tell whoever made this question set really wanted to get to 100 just for the accomplishment and started asking really random ass questions. But I still think it’s cool so I’m not hating on it too much. Again, shout out to <a href="https://shellsharks.com/">Shellsharks</a> where I discovered this set of questions. I enjoyed reading their answers.</p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

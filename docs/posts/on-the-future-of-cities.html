@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>On the future of cities | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://brandondonnelly.com/on-the-future-of-cities"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        On the future of cities
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <figure class="img-center"><img class="image-node embed" src="https://storage.googleapis.com/papyrus_images/50e28fd3bd3667c987e57f709c7d7ea7357ff07768ba998b8a861aaef2963074.jpg" /><figcaption class="hide-figcaption"></figcaption></figure><p><a class="dont-break-out" href="https://rll.fas.harvard.edu/people/bruno-carvalho" rel="noopener noreferrer nofollow ugc" target="_blank">Bruno Carvalho</a> has just published a new book that is right in the wheelhouse of this blog. It's called <a class="dont-break-out" href="https://press.princeton.edu/books/hardcover/9780691246550/the-invention-of-the-future?srsltid=AfmBOoqZM7zuqyy5rPNmlHj-P6GUDApTaqMGlDn42vACNoFMPw533sRE" rel="noopener noreferrer nofollow ugc" target="_blank"><em>The Invention of the Future: A History of Cities in the Modern World</em></a>. </p><p>The book starts in the mid-18th century with cities like Lisbon, Paris, and London. However, more than being just a history of cities, it is (from what I've read) the story of how city builders throughout history have tried to predict and create the future, only to often get it wrong. </p><p>In the words of Carvalho (<a class="dont-break-out" href="https://www.bloomberg.com/news/features/2026-03-27/inventing-the-cities-of-future-with-lessons-from-the-past?cmpid=citylab-weekly&amp;utm_campaign=citylab-weekly&amp;utm_medium=email&amp;utm_source=newsletter&amp;utm_term=260327" rel="noopener noreferrer nofollow ugc" target="_blank">via CityLab</a>): "The constant of urbanization is change, so we have to always imagine our solutions as being contingent." </p><p>The same is, of course, true today. For example, building tunnels for Tesla cars may seem like a clever and futuristic solution to urban traffic congestion, except that it's hard to imagine it actually working (also via CityLab):</p><blockquote><p>"One of the values of history is to give us a sharper sense of what’s new in the present. Many people imagine solutions that to them represent the great rupture, but that’s not always the case. The tunnels are a good example; they bring together the problems of cars having very low carrying capacity and subways being very hard to build. That doesn’t strike me as a very futuristic approach to mobility, but rather one that just hasn’t learned enough about the past."</p></blockquote><p>I now have Carvalho's book on my reading list, and I thought I would share it here in case some of you would like to do the same.</p><hr /><p><em>Cover photo by </em><a class="dont-break-out" href="https://unsplash.com/@michielannaert?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText" rel="noopener noreferrer nofollow ugc" target="_blank"><em>Michiel Annaert</em></a><em> on </em><a class="dont-break-out" href="https://unsplash.com/photos/people-walking-on-beach-during-daytime-InxB1SWvuwQ?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText" rel="noopener noreferrer nofollow ugc" target="_blank"><em>Unsplash</em></a></p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

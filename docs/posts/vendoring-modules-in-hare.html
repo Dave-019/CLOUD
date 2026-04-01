@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vendoring Modules in Hare | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://blainsmith.com/articles/vendoring-modules-in-hare/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        Vendoring Modules in Hare
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <p>Hare doesn't have a package manager. This is by design and I'm glad for
+it. No dependency hell, no lock files, no <code>node_modules</code> black hole.
+However, you still need a way to pull in third-party code. There are two
+approaches:</p>
+<ol>
+<li>system-wide installation via <code>make install</code>, and</li>
+<li>vendoring directly into your project with <code>git subtree</code>.</li>
+</ol>
+<p>I'll use <a href="https://git.sr.ht/~sircmpwn/hare-json" rel="external">hare-json</a> as the
+running example throughout. Our goal is to be able to use this module
+like so:</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code><span class="giallo-l"><span>use encoding::json;</span></span>
+<span class="giallo-l"><span>use fmt</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>export fn main() void = {</span></span>
+<span class="giallo-l"><span>	let obj = json::newobject();</span></span>
+<span class="giallo-l"><span>	defer json::finish(obj);</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>	json::set(&amp;obj, &quot;hello&quot;, &quot;world&quot;)!;</span></span>
+<span class="giallo-l"><span>	json::set(&amp;obj, &quot;foo&quot;, &quot;bar&quot;)!;</span></span>
+<span class="giallo-l"><span>	json::set(&amp;obj, &quot;the answer&quot;, 42.0)!;</span></span>
+<span class="giallo-l"><span>	...</span></span>
+<span class="giallo-l"><span>};</span></span></code></pre>
+<p>The <code>encoding/</code> folder within the <code>hare-json</code> module needs to be found
+by the Hare toolchain so that when we <code>use</code> it it will then follow the
+folder path <code>encoding/json/</code> via <code>encoding::json</code> and find all the <code>*.ha</code>
+files.</p>
+<h2 id="how-hare-finds-modules">How Hare finds modules</h2>
+<p>When you write <code>use encoding::json;</code> in your code, the build driver
+looks for a directory called <code>encoding/json/</code> containing <code>.ha</code> files. It
+searches a list of source roots in this order:</p>
+<ol>
+<li>The current working directory (<code>.</code>) which is always first, always implicit</li>
+<li>Each directory listed in the <code>HAREPATH</code> environment variable,
+colon-delimited</li>
+<li>If <code>HAREPATH</code> is unset, a compiled-in default (typically the stdlib
+and third-party install locations)</li>
+</ol>
+<p>Check yours with:</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code><span class="giallo-l"><span style="color: #59C2FF;">$</span><span style="color: #AAD94C;"> hare version</span><span style="color: #95E6CB;"> -v</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;">hare</span><span style="color: #D2A6FF;"> 0.26.0</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;">build</span><span style="color: #AAD94C;"> tags:</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;">        +x86_64</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;">        +linux</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;">tool</span><span style="color: #AAD94C;"> paths:</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;">HAREPATH</span><span> (from</span><span style="color: #AAD94C;"> environment</span><span>):</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;">        vendor/*/</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;">        /usr/src/hare/third-party</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;">        /usr/src/hare/stdlib</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;">        /usr/local/src/hare/third-party</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;">        /usr/local/src/hare/stdlib</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;">toolchains:</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;"> aarch64:</span></span>
+<span class="giallo-l"><span>        AS</span><span style="color: #F29668;">=</span><span style="color: #AAD94C;">as</span></span>
+<span class="giallo-l"><span>        CC</span><span style="color: #F29668;">=</span><span style="color: #AAD94C;">cc</span></span>
+<span class="giallo-l"><span>        LD</span><span style="color: #F29668;">=</span><span style="color: #AAD94C;">ld</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;"> riscv64:</span></span>
+<span class="giallo-l"><span>        AS</span><span style="color: #F29668;">=</span><span style="color: #AAD94C;">as</span></span>
+<span class="giallo-l"><span>        CC</span><span style="color: #F29668;">=</span><span style="color: #AAD94C;">cc</span></span>
+<span class="giallo-l"><span>        LD</span><span style="color: #F29668;">=</span><span style="color: #AAD94C;">ld</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;"> x86_64:</span></span>
+<span class="giallo-l"><span>        AS</span><span style="color: #F29668;">=</span><span style="color: #AAD94C;">as</span></span>
+<span class="giallo-l"><span>        CC</span><span style="color: #F29668;">=</span><span style="color: #AAD94C;">cc</span></span>
+<span class="giallo-l"><span>        LD</span><span style="color: #F29668;">=</span><span style="color: #AAD94C;">ld</span></span></code></pre>
+<p>This is the result of mine since I set my <code>HAREPATH</code> in my <code>.zshrc</code>, but
+on a typical Linux system with Hare installed to <code>/usr/local</code>, the
+default <code>HAREPATH</code> looks something like:</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code><span class="giallo-l"><span>/usr/local/src/hare/stdlib:/usr/local/src/hare/third-party</span></span></code></pre>
+<p>First directory with <code>.ha</code> files matching the module path wins. That's
+the entire resolution algorithm. Simple.</p>
+<h2 id="the-repo-layout-convention">The repo layout convention</h2>
+<p>Most Hare libraries follow a naming convention: the repo is called
+<code>hare-MODULE</code>, and the actual module code lives in a top-level directory
+named after the module. For hare-json:</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code><span class="giallo-l"><span>hare-json/</span></span>
+<span class="giallo-l"><span>├── encoding/</span></span>
+<span class="giallo-l"><span>│   └── json/</span></span>
+<span class="giallo-l"><span>│       ├── types.ha</span></span>
+<span class="giallo-l"><span>│       ├── lex.ha</span></span>
+<span class="giallo-l"><span>│       ├── value.ha</span></span>
+<span class="giallo-l"><span>│       └── ...</span></span>
+<span class="giallo-l"><span>├── Makefile</span></span>
+<span class="giallo-l"><span>├── README</span></span>
+<span class="giallo-l"><span>└── COPYING</span></span></code></pre>
+<p>The code you import as <code>encoding::json</code> lives under <code>encoding/json/</code>.
+This means the <em>parent directory of <code>encoding/</code></em> is what needs to be on
+<code>HAREPATH</code>. Not the <code>json/</code> directory itself. Not the repo root unless
+the repo root <em>is</em> that parent directory.</p>
+<p>This is where most people trip up.</p>
+<h2 id="approach-1-system-wide-install">Approach 1: System-wide install</h2>
+<p>Clone, make, done.</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code><span class="giallo-l"><span style="color: #59C2FF;">$</span><span style="color: #AAD94C;"> git clone https://git.sr.ht/~sircmpwn/hare-json</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;">$</span><span style="color: #AAD94C;"> cd hare-json</span></span>
+<span class="giallo-l"><span style="color: #59C2FF;">$</span><span style="color: #AAD94C;"> make install</span></span></code></pre>
+<p>The Makefile handles putting <code>.ha</code> files into the right location. A
+typical Hare library Makefile looks like:</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code><span class="giallo-l"><span style="color: #F07178;">.POSIX</span><span style="color: #BFBDB6B3;">:</span></span>
+<span class="giallo-l"><span style="color: #F07178;">.SUFFIXES</span><span style="color: #BFBDB6B3;">:</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>HARE</span><span style="color: #BFBDB6B3;">=</span><span>hare</span></span>
+<span class="giallo-l"><span>HAREFLAGS</span><span style="color: #BFBDB6B3;">=</span></span>
+<span class="giallo-l"><span>DESTDIR</span><span style="color: #BFBDB6B3;">=</span></span>
+<span class="giallo-l"><span>PREFIX</span><span style="color: #BFBDB6B3;">=</span><span>/usr/local</span></span>
+<span class="giallo-l"><span>SRCDIR</span><span style="color: #BFBDB6B3;">=</span><span style="color: #AAD94C;">$(</span><span>PREFIX</span><span style="color: #AAD94C;">)</span><span>/src</span></span>
+<span class="giallo-l"><span>HARESRCDIR</span><span style="color: #BFBDB6B3;">=</span><span style="color: #AAD94C;">$(</span><span>SRCDIR</span><span style="color: #AAD94C;">)</span><span>/hare</span></span>
+<span class="giallo-l"><span>THIRDPARTYDIR</span><span style="color: #BFBDB6B3;">=</span><span style="color: #AAD94C;">$(</span><span>HARESRCDIR</span><span style="color: #AAD94C;">)</span><span>/third-party</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #FFB454;">install</span><span style="color: #BFBDB6B3;">:</span></span>
+<span class="giallo-l"><span>	install -Dm644 encoding/json/* </span><span style="color: #AAD94C;">$(</span><span>DESTDIR</span><span style="color: #AAD94C;">)$(</span><span>THIRDPARTYDIR</span><span style="color: #AAD94C;">)</span><span>/encoding/json/</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #FFB454;">uninstall</span><span style="color: #BFBDB6B3;">:</span></span>
+<span class="giallo-l"><span>	rm -rf </span><span style="color: #AAD94C;">$(</span><span>DESTDIR</span><span style="color: #AAD94C;">)$(</span><span>THIRDPARTYDIR</span><span style="color: #AAD94C;">)</span><span>/encoding/json</span></span></code></pre>
+<p>The default <code>THIRDPARTYDIR</code> resolves to <code>/usr/local/src/hare/third-party</code>,
+which is already in the default <code>HAREPATH</code>. After <code>make install</code>,
+<code>use encoding::json;</code> just works.</p>
+<p>If your Hare installation lives under <code>/usr</code> instead of <code>/usr/local</code>:</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code><span class="giallo-l"><span style="color: #59C2FF;">$</span><span style="color: #AAD94C;"> make PREFIX=/usr install</span></span></code></pre>
+<p>Or a custom path entirely:</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code><span class="giallo-l"><span style="color: #59C2FF;">$</span><span style="color: #AAD94C;"> make THIRDPARTYDIR=/opt/hare/libs install</span></span></code></pre>
+<p>Just make sure whatever path you install to is in your <code>HAREPATH</code>.</p>
+<p>This approach is clean and simple. Every project on the system can use
+the module with zero configuration. The downside is versioning: all
+projects share the same installed version. If project A needs an older
+hare-json and project B needs a newer one, you're stuck. There's no
+record in your project's repo of which dependencies you need or what
+versions they are either. A new contributor has to read your README and
+manually install each one.</p>
+<h2 id="approach-2-vendoring-with-git-subtree">Approach 2: Vendoring with git subtree</h2>
+<p>For reproducible builds and per-project dependency management, vendor the
+module source directly into your project.</p>
+<p>From your project root:</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code><span class="giallo-l"><span style="color: #59C2FF;">$</span><span style="color: #AAD94C;"> git subtree add</span><span style="color: #95E6CB;"> --prefix</span><span style="color: #AAD94C;"> vendor/hare-json</span><span style="color: #95E6CB;"> \</span></span>
+<span class="giallo-l"><span style="color: #AAD94C;">    https://git.sr.ht/~sircmpwn/hare-json master</span><span style="color: #95E6CB;"> --squash</span></span></code></pre>
+<p>This creates <code>vendor/hare-json/</code> with the full contents of the repo:</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code><span class="giallo-l"><span>my-project/</span></span>
+<span class="giallo-l"><span>├── main.ha</span></span>
+<span class="giallo-l"><span>├── vendor/</span></span>
+<span class="giallo-l"><span>│   └── hare-json/</span></span>
+<span class="giallo-l"><span>│       ├── encoding/</span></span>
+<span class="giallo-l"><span>│       │   └── json/</span></span>
+<span class="giallo-l"><span>│       │       ├── types.ha</span></span>
+<span class="giallo-l"><span>│       │       ├── lex.ha</span></span>
+<span class="giallo-l"><span>│       │       └── ...</span></span>
+<span class="giallo-l"><span>│       ├── Makefile</span></span>
+<span class="giallo-l"><span>│       └── README</span></span>
+<span class="giallo-l"><span>└── Makefile</span></span></code></pre>
+<p>Remember the layout convention: <code>encoding/json/</code> is relative to the repo
+root <code>vendor/hare-json/</code>. So the path that goes on <code>HAREPATH</code> is
+<code>vendor/hare-json</code>. Not <code>vendor/</code>. Not
+<code>vendor/hare-json/encoding/json/</code>.</p>
+<h3 id="updating-a-vendored-dependency">Updating a vendored dependency</h3>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code><span class="giallo-l"><span style="color: #59C2FF;">$</span><span style="color: #AAD94C;"> git subtree pull</span><span style="color: #95E6CB;"> --prefix</span><span style="color: #AAD94C;"> vendor/hare-json</span><span style="color: #95E6CB;"> \</span></span>
+<span class="giallo-l"><span style="color: #AAD94C;">    https://git.sr.ht/~sircmpwn/hare-json master</span><span style="color: #95E6CB;"> --squash</span></span></code></pre>
+<p>Upstream changes get merged in. <code>--squash</code> collapses the upstream
+history into a single commit.</p>
+<h3 id="setting-harepath">Setting HAREPATH</h3>
+<p>Important: when you set <code>HAREPATH</code> as an environment variable, it
+<strong>completely replaces</strong> the compiled-in default. You must re-include the
+stdlib and third-party paths yourself or the build driver won't find the
+standard library. Run <code>hare version -v</code> to see what those paths are on
+your system.</p>
+<p>The Hare docs mention establishing <code>vendor/*/</code> as a default convention
+for <code>HAREPATH</code>, but as of this writing it does not work. The glob does
+not expand the way you'd expect and the build driver won't find your
+modules. You need to specify each vendored module path explicitly.</p>
+<p>The way to do this is in your project Makefile:</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code><span class="giallo-l"><span style="color: #F07178;">.POSIX</span><span style="color: #BFBDB6B3;">:</span></span>
+<span class="giallo-l"><span style="color: #F07178;">.SUFFIXES</span><span style="color: #BFBDB6B3;">:</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>HARE</span><span style="color: #BFBDB6B3;">=</span><span>hare</span></span>
+<span class="giallo-l"><span>HAREFLAGS</span><span style="color: #BFBDB6B3;">=</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>HAREPATH</span><span style="color: #BFBDB6B3;">=</span><span>vendor/hare-json:/usr/local/src/hare/third-party:/usr/local/src/hare/stdlib</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #FFB454;">build</span><span style="color: #BFBDB6B3;">:</span></span>
+<span class="giallo-l"><span>	HAREPATH=</span><span style="color: #AAD94C;">$(</span><span>HAREPATH</span><span style="color: #AAD94C;">) $(</span><span>HARE</span><span style="color: #AAD94C;">)</span><span> build </span><span style="color: #AAD94C;">$(</span><span>HAREFLAGS</span><span style="color: #AAD94C;">)</span><span> -o my-project cmd/my-project/</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #FFB454;">check</span><span style="color: #BFBDB6B3;">:</span></span>
+<span class="giallo-l"><span>	HAREPATH=</span><span style="color: #AAD94C;">$(</span><span>HAREPATH</span><span style="color: #AAD94C;">) $(</span><span>HARE</span><span style="color: #AAD94C;">)</span><span> test </span><span style="color: #AAD94C;">$(</span><span>HAREFLAGS</span><span style="color: #AAD94C;">)</span></span></code></pre>
+<p>Multiple vendored deps, list each one:</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code><span class="giallo-l"><span>HAREPATH</span><span style="color: #BFBDB6B3;">=</span><span>vendor/hare-json:vendor/hare-xml:vendor/hare-http:/usr/local/src/hare/third-party:/usr/local/src/hare/stdlib</span></span></code></pre>
+<p>Colon-separated, just like <code>PATH</code>. Adjust the stdlib and third-party
+paths to match your system. The tradeoff is you need to update the
+Makefile every time you add or remove a vendored dependency, and the
+stdlib paths are hardcoded to one install prefix.</p>
+<h3 id="vendoring-pros-and-cons">Vendoring pros and cons</h3>
+<p>You get reproducible builds, per-project versioning, and a self-contained
+repo that any contributor can clone and build immediately. Dependencies
+are explicit in the source tree.</p>
+<p>The cost is a larger repo since you're committing the dependency source
+and a slightly more complex build setup. You also need to manually pull
+upstream changes when you want them.</p>
+<h2 id="which-to-use">Which to use</h2>
+<p>Personal projects, scripts, small tools: <code>make install</code>. Fast, simple,
+done.</p>
+<p>Anything collaborative, anything you want reproducible builds for,
+anything that might need pinned dependency versions: vendor with
+<code>git subtree</code>. The overhead is minimal and the payoff is real.</p>
+<p>You can combine both. Install common modules system-wide for convenience
+during development and vendor them for CI and release builds. Since <code>.</code>
+has the highest priority in <code>HAREPATH</code> and vendored paths come before the
+defaults, the resolution order does what you'd expect.</p>
+<h2 id="hare-s-growing-ecosystem">Hare's growing ecosystem</h2>
+<p>You can find a lot of Hare projects on <a href="https://sourcehut.org" rel="external">https://sourcehut.org</a>
+and <a href="https://codeberg.org" rel="external">https://codeberg.org</a>, but there is also a
+community currated list that is growing all the time on the
+<a href="https://harelang.org/project-library/" rel="external">Project Library</a> page of the
+official Hare website.</p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

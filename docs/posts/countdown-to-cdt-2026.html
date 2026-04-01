@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Countdown to CDT 2026 | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://blog.chrisnaude.com/cdt/countdown-to-cdt-2026/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        Countdown to CDT 2026
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <p>As many of my friends are aware, I've been talking about hiking the <a href="https://cdtcoalition.org/" target="_blank">Continental Divide Trail</a> for months now. The countdown has officially begun, and on April 10th I'll be taking a Greyhound bus from Phoenix to Lordsburg New Mexico. I'll spend the night there, and then at 6:30 in the morning of the 11th I'll be taking the <a href="https://cdtcoalition.org/explore-the-trail/southern-terminus-shuttle/" target="_blank">CDT shuttle</a> to the CDT Southern Terminus. From there I'll start hiking for about 4 days northbound towards until I reach Lordsburg again. From there I'll spend the night, resupply, and then make my way up the CDT. There are a lot of alternate routes on the CDT, but I'll be mostly sticking to the "red line." The main alternate trail will be the <a href="https://cdtcoalition.org/explore-new-alternate-trails-in-the-gila-wilderness/" target="_blank">Gila River section</a>. My journey will continue up through Colorado, Wyoming, Idaho, Montana and finish in Waterton Canada.</p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

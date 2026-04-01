@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CSS position: sticky now sticks to the nearest scroller on a per axis basis! | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://www.bram.us/2026/03/30/css-sticky-per-axis/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        CSS position: sticky now sticks to the nearest scroller on a per axis basis!
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <!-- Added by Post/Page Specific Custom Code plugin, thank you for using! -->
+
+<figure><div class="wp-video" style="width: 640px;"><video class="wp-video-shortcode" controls="controls" height="391" id="video-36196-1" loop="loop" preload="metadata" width="640"><source src="https://www.bram.us/wordpress/wp-content/uploads/2026/03/sticky-per-axis-2.mp4?_=1" type="video/mp4" /><a href="https://www.bram.us/wordpress/wp-content/uploads/2026/03/sticky-per-axis-2.mp4">https://www.bram.us/wordpress/wp-content/uploads/2026/03/sticky-per-axis-2.mp4</a></video></div><figcaption>Recording of <a href="https://codepen.io/bramus/pen/VYKQwmK">the demo</a>.</figcaption></figure>
+<p style="text-align: center; font-size: 28px; font-family: 'times new roman', times; margin: 3em 0;">~</p>
+<div class="intro">
+<p>If you’ve ever tried to build a data table with a sticky header and a sticky first column, you know the pain. You’d think a simple <code>position: sticky</code> with <code>top: 0</code> and <code>left: 0</code> would be enough, but the reality was that only one of both would stick.</p>
+<p>A recent change to CSS fixes this: <code>position: sticky</code> now plays nice with <em>single-axis scrollers</em>, allowing you to have sticky elements that track different scroll containers on different axes. This change is available in Chrome 148.</p>
+</div>
+<p style="text-align: center; font-size: 28px; font-family: 'times new roman', times; margin: 3em 0;">~</p>
+<h3><a href="#the-situation" name="the-situation">#</a> The Situation</h3>
+<p>To understand the impact, let&#8217;s quickly review the standard setup for a responsive table. You start with a wide HTML <code>&lt;table&gt;</code> full of data. To prevent this wide table from breaking your page layout on small screen devices, you typically wrap it in a container with <code>overflow-x: auto</code>.</p>
+<pre><code class="language-html">&lt;div class="table-wrapper" style="overflow-x: auto;"&gt;
+  &lt;table&gt;
+    …
+  &lt;/table&gt;
+&lt;/div&gt;
+</code></pre>
+<p>Because you want the column headers (the <code>&lt;thead&gt;</code>) to stay visible when scrolling down the document, you apply <code>position: sticky; top: 0;</code> to them. Simultaneously, you want your first column to stay visible when scrolling sideways through the data, so you apply <code>position: sticky; left: 0;</code> there.</p>
+<pre><code class="language-css">.table-wrapper {
+  overflow-x: auto;
+}
+
+.table-wrapper thead {
+  position: sticky;
+  top: 0;
+}
+
+.table-wrapper td:first-child {
+  position: sticky;
+  left: 0;
+}
+</code></pre>
+<p>However, this doesn&#8217;t work as expected. While the first column will stick to the left edge of the table wrapper when scrolling horizontally, the headers will scroll out of view along with the rest of the page.</p>
+<p>This is because the <code>.table-wrapper</code> becomes the sticky reference for <em>both</em> axes. Because the wrapper only scrolls horizontally, the vertical sticking becomes completely ineffective. Your <code>top: 0</code> headers would just happily scroll out of view along with the rest of the page 😭</p>
+<p>To get around this, you had to rely on lots of JavaScript to synchronize the scroll position, or rely on duplicated headers.</p>
+<div class="note">
+<p>Note: While there are <a href="https://css-tricks.com/a-table-with-both-a-sticky-header-and-a-sticky-first-column/">pure CSS solutions</a> to make sure the headers also stick within the <code>.table-wrapper</code>, the problem described here is different: instead of getting the headers to stick inside the <strong>same</strong> scroller, you want the headers to be stuck against a <strong>different</strong> scroller <em>(here: the <code>.table-wrapper</code> for horizontally sticky stuff, and the document’s scroller for vertically sticky stuff)</em>.</p>
+</div>
+<p style="text-align: center; font-size: 28px; font-family: 'times new roman', times; margin: 3em 0;">~</p>
+<h3><a href="#the-change" name="the-change">#</a> The Change</h3>
+<p>A recent change to CSS fixes this issue: <code>position: sticky</code> can now track the nearest scrolling container <em>per axis</em>.</p>
+<p>This means that for our wide data table:</p>
+<ul>
+<li>The first column can be sticky on the horizontal axis against the table wrapper.</li>
+<li>The headers can be sticky on the vertical axis against a completely different scroller — such as the document itself!</li>
+</ul>
+<p>No more duplicating headers. No more scroll-syncing JavaScript. Just plain CSS doing exactly what you&#8217;d expect it to do.</p>
+<div class="note">
+<p>The request for this change was filed back in 2017, in CSS WG Issue <a href="https://github.com/w3c/csswg-drafts/issues/865">#865</a>. It’s not that often you see three-digit issues get resolved and implemented 😅</p>
+</div>
+<p style="text-align: center; font-size: 28px; font-family: 'times new roman', times; margin: 3em 0;">~</p>
+<h3><a href="#see-it-in-action" name="see-it-in-action">#</a> See it in action</h3>
+<p>You can see this new behavior in action in this CodePen demo:</p>
+<p class="codepen" style="height: 760px; display: flex; border: 2px solid; margin: 1em 0; padding: 1em;">
+  <span>See the Pen <a href="https://codepen.io/bramus/pen/VYKQwmK"><br />
+  CSS `position: sticky` for Single Axis Scroll Containers</a> by Bramus (<a href="https://codepen.io/bramus">@bramus</a>)<br />
+  on <a href="https://codepen.io">CodePen</a>.</span>
+</p>
+<p></p>
+<p>If you view the demo in a supported browser, the first column will stick to the left edge of the table wrapper when scrolling horizontally, and the top headers will stick to the top of the viewport when scrolling vertically.</p>
+<p style="text-align: center; font-size: 28px; font-family: 'times new roman', times; margin: 3em 0;">~</p>
+<h3><a href="#an-important-detail-watch-your-overflow" name="an-important-detail-watch-your-overflow">#</a> An Important Detail: Watch your overflow</h3>
+<p>If you look closely at the CSS in the demo, you might notice a very specific detail in how the <code>.table-wrapper</code> is styled.</p>
+<pre><code class="language-css">.table-wrapper {
+  overflow: auto clip;
+}</code></pre>
+<p>To make the wrapper scroll horizontally, you might instinctively reach for <code>overflow-x: scroll</code> (or <code>auto</code>). However, doing so will actually break the vertical stickiness we just achieved!</p>
+<p>Why? Because in CSS, if you set <code>overflow-x</code> to <code>scroll</code> or <code>auto</code>, the browser automatically computes <code>overflow-y</code> to <code>auto</code> as well (assuming its value was <code>visible</code>). This turns the wrapper into a scroll container on the vertical axis too, which means it once again traps our headers and becomes their sticky reference.</p>
+<p>To fix this, we need to explicitly tell the browser <em>not</em> to create a scroll container on the block axis. We do this by using the <code>clip</code> keyword:</p>
+<pre><code class="language-css">.table-wrapper {
+  /* ❌ This computes overflow-y to auto, breaking vertical stickiness */
+  /* overflow-x: auto; */
+
+  /* ✅ This creates a scroller on the inline axis, but clips the block axis */
+  overflow: auto clip; 
+}</code></pre>
+<p>By setting <code>overflow-y</code> to <code>clip</code> (via the <code>overflow</code> shorthand), the wrapper does not become a scrollport on the vertical axis. The headers are therefore free to track the document viewport instead.</p>
+<p style="text-align: center; font-size: 28px; font-family: 'times new roman', times; margin: 3em 0;">~</p>
+<h3><a href="#browser-support" name="browser-support">#</a> Browser Support</h3>
+<div class="note note--supergreen">
+<p>💡 Although this post was originally published in March 2026, the section below is constantly being updated. <em>Last update: March 30, 2026</em>.</p>
+</div>
+<p>At the time of writing, this feature is only supported in Chrome 148</p>
+<dl>
+<dt>Chromium <em>(Blink)</em></dt>
+<dd>
+<p>✅ Available in Chromium 148.0.7742.0.</p>
+</dd>
+<dt>Firefox <em>(Gecko)</em></dt>
+<dd>
+<p>❌ No support</p>
+<p>Subscribe to <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=2023702">Bug #2023702</a> for updates.</p>
+</dd>
+<dt>Safari <em>(WebKit)</em></dt>
+<dd>
+<p>❌ No support</p>
+</dd>
+</dl>
+<p style="text-align: center; font-size: 28px; font-family: 'times new roman', times; margin: 3em 0;">~</p>
+<h3><a href="#feature-detection" name="feature-detection">#</a> Feature Detection</h3>
+<p>Because older browsers still use the inner container as the sticky reference for both axes, you might want to feature-detect this new behavior to provide JS-based fallbacks or conditionally load specific styles.</p>
+<p>While we can&#8217;t easily detect this layout behavior directly with an <code>@supports</code> query in CSS yet — I have an <a href="https://github.com/w3c/csswg-drafts/issues/13677">open issue at the CSSWG for this</a> — you can feature detect this using JavaScript. The <a href="https://codepen.io/bramus/full/VYKQwmK">CodePen demo linked above</a> includes a script that does exactly this.</p>
+<p>It handles the detection by evaluating how the browser resolves the sticky positioning offsets within a scrolling wrapper. Feel free to peek at the JS tab in the Pen to grab the snippet for your own projects.</p>
+<p style="text-align: center; font-size: 28px; font-family: 'times new roman', times; margin: 3em 0;">~</p>
+<h3><a href="#spread-the-word" name="spread-the-word">#</a> Spread the word</h3>
+<p>Feel free to reshare one of the following posts on social media to help spread the word:</p>
+<ul>
+<li><a href="https://bsky.app/profile/bram.us/post/3mibo3clru22q">🦋 Bluesky</a></li>
+<li><a href="https://front-end.social/@bramus/116318130490039355">🦣 Mastodon</a></li>
+<p>  <!-- 
+
+<li>💼 LinkedIn</li>
+
+ -->
+</ul>
+<p style="text-align: center; font-size: 28px; font-family: 'times new roman', times; margin: 3em 0;">~</p>
+<div class="note">
+	<p><b>🔥 Like what you see? Want to stay in the loop? Here's how:</b></p>
+	<ul>
+            <li><a href="https://bsky.app/profile/bram.us">🦋 Follow @bram.us on Bluesky</a></li>
+            <li><a href="https://bram.us/feed">🔸 Follow bram.us using RSS</a></li>
+	</ul>
+	<p>I can also be found on <a href="https://x.com/bramus">𝕏 Twitter</a> and <a href="https://front-end.social/@bramus">🐘 Mastodon</a> but only post there sporadically.</p>
+</div>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

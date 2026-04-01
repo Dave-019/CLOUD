@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Links of Note | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="https://branemrys.blogspot.com/2026/03/links-of-note_29.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        Links of Note
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <p>&nbsp;* John A. Goldsmith, <a href="https://aeon.co/essays/brentano-who-taught-freud-and-husserl-is-a-lesson-to-us-all">With charisma to spare</a>, on Franz Brentano, at "Aeon"</p><p>* Paul Lodge, <a href="https://philarchive.org/rec/LODLPD-2">Leibniz's Philosophical Dream of Rational and Intuitive Enlightenment</a> (PDF)</p><p>* Hamish Russell, <a href="https://philarchive.org/rec/RUSBSF">Balancing, Shielding, Filtering: Three Models of Role Morality</a> (PDF)</p><p>* Ioannes Chountes de Fabbri,&nbsp;<a href="https://engelsbergideas.com/essays/jurgen-habermas-lost-world-the-coffee-house-and-the-public-sphere/">Jürgen Habermas’ lost world: the coffee-house and the public sphere</a>, at "Engelsberg Ideas"</p><p>* Karen Crowther, <a href="https://philarchive.org/rec/CRODHU">Dumb Holes: Universality or Analogy? What Makes an Analogue Experiment an Analogue Experiment?</a> (PDF)</p><p>* Oliver Traldi, <a href="https://fusionaier.org/2026/jane-austens-virtuous-liberalism/">Jane Austen's Virtuous Liberalism</a>, at "Fusion"</p><p>* James Chastek, <a href="https://thomism.wordpress.com/2026/03/22/talk-at-benedictine-college/">Talk at Benedictine College</a>, on the sublime, at "Just Thomism"</p><p>* Doug Campbell, <a href="https://platosfishtrap.substack.com/p/platos-myth-of-atlantis">Plato's myth of Atlantis</a>, at "Plato's Fish-Trap"</p><p>* <a href="https://publicdomainreview.org/collection/an-anciente-mappe-of-fairyland/">Bernard Sleigh's <i>Anciente Mappe of Fairyland</i></a>, at "Public Domain Review"</p><p>* Edward Feser, <a href="https://www.edwardfeser.com/unpublishedpapers/microphysics.html">The Epistemology of Microphysics</a></p><p>* Joseph Heath, <a href="https://www.persuasion.community/p/the-two-nightmares-of-jurgen-habermas">The Two Nightmares of&nbsp;Jürgen Habermas</a>, at "Persuasion"</p><p>* Ella Frances, <a href="https://ellajournal.substack.com/p/the-sublime-in-action-kant-awe-and">The Sublime in Action: Kant, Awe, and Creative Power</a></p><p>* <a href="https://www.bbc.com/news/articles/cm2rew2dgzzo">D'Artagnans remains may have been found;</a>&nbsp;d'Artagnan, of course, is the historical Musketeer on whom the d'Artagnan of Dumas's <i>The Three Musketeers</i>&nbsp;is based.</p><p>* Fr. Justin Hewlett, <a href="https://geekorthodox.substack.com/p/a-proper-approach-to-polytheism">A Proper Approach to Polytheism</a>, at "Geek Orthodox"</p><p>* Michael Pakaluk, <a href="https://michaeljosephpakaluk.substack.com/p/the-meaning-of-pursuit-of-happiness">The Meaning of "Pursuit of Happiness"</a></p><p>* James DiFrisco &amp; Steven Hecht Orzack, <a href="https://academic.oup.com/bioscience/advance-article/doi/10.1093/biosci/biag016/8516253?searchresult=1&amp;login=false#556936908">Biology Needs Philosophy, But What Philosophy?</a></p><p>* Amod Lele, <a href="https://loveofallwisdom.com/blog/2026/03/habermas-and-a-road-not-taken/">Habermas and a road not taken</a>, at "Love of All Wisdom"</p>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>

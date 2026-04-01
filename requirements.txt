@@ -1,0 +1,5 @@
+aiohttp
+feedparser
+jinja2
+readability-lxml
+lxml_html_clean

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How to assert exception message in PyTest? | My Feed</title>
+  <link rel="stylesheet" type="text/css" href="../styles.css" media="screen" />
+</head>
+<body>
+  <div class="post-page">
+
+    <nav class="post-page-nav">
+      <a href="/index.html">back</a>
+   
+    </nav>
+
+    <h1>
+    <a href="/2026/03/30/how-to-assert-exception-message-in-pytest.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration-color: var(--accent); color: inherit;">
+        How to assert exception message in PyTest?
+    </a>
+    </h1>
+
+    <div class="post-content">
+      <p>I kept forgetting how to assert exception messages in PyTest, so I finally checked <a href="https://docs.pytest.org/en/stable/reference/reference.html#pytest-raises">the docs</a>. Here’s a reference snippet.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="k">def</span> <span class="nf">broken</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="nb">ValueError</span><span class="p">(</span><span class="s">"something went wrong"</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_broken</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="p">.</span><span class="n">raises</span><span class="p">(</span><span class="nb">ValueError</span><span class="p">,</span> <span class="n">match</span><span class="o">=</span><span class="s">"went wrong"</span><span class="p">):</span>
+        <span class="n">broken</span><span class="p">()</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p><em>That’s it for today. Happy hacking! 🐍</em></p>
+</blockquote>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      function wrapImage(img) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'img-wrapper';
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
+        img.loading = 'lazy';
+
+        function markLoaded() {
+          wrapper.classList.add('loaded');
+        }
+
+        img.addEventListener('load', markLoaded);
+        img.addEventListener('error', function () {
+          markLoaded();
+          img.style.display = 'none';
+        });
+
+        if (img.complete && img.naturalWidth > 0) {
+          markLoaded();
+        }
+      }
+
+      document.querySelectorAll('.post-content img').forEach(wrapImage);
+    });
+  </script>
+
+</body>
+</html>
