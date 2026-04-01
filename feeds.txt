@@ -217,7 +217,6 @@ http://techsnuffle.com/feed.xml
 http://www.un4seen.com/rss.xml
 http://www.tomarenberg.net/blog?format=rss
 https://0xsid.com/blog/rss.xml
-http://blog.colinmarshall.org/?feed=rss2
 http://blog.joemoreno.com/atom.xml
 http://dianapfeil.com/feed.xml
 http://graphicrants.blogspot.com/atom.xml
@@ -229,7 +228,6 @@ http://zuiker.com/rss
 https://10maurycy10.github.io/index.xml
 https://1379.tech/rss
 https://ameyama.com/rss.xml
-https://alternate-timelines.com/rss/public
 https://amerpie.lol/atom.xml
 https://astrovelo.com/posts_feed
 https://arseblog.com/feed

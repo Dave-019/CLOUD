@@ -6,6 +6,7 @@ import logging
 import re
 import sys
 import hashlib
+import os
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from urllib.parse import urlparse
@@ -24,7 +25,6 @@ FEEDS_FILE = Path("feeds.txt")
 INDEX_TMPL = Path("index.template.html")
 POST_TMPL = Path("post.template.html")
 STYLES_FILE = Path("styles.css")
-STORE_FILE = Path("posts_store.json")
 
 RELEVANT_DAYS = 2
 TIMEOUT_SECS = 25
@@ -35,13 +35,16 @@ EAT = ZoneInfo("Africa/Nairobi")
 
 USER_AGENT = "RectifierBot/1.0 (+https://pages.dev)"
 
+# Cloudflare D1 config
+CF_ACCOUNT_ID = os.environ.get("CLOUDFLARE_ACCOUNT_ID", "")
+CF_API_TOKEN = os.environ.get("CLOUDFLARE_API_TOKEN", "")
+D1_DATABASE_ID = os.environ.get("D1_DATABASE_ID", "")
+
 # Exact host matches only
 BLOCKLIST = {
     "www.metafilter.com",
     "twitter.com",
     "x.com",
-    # Add exact hosts here:
-    # "www.mothersalwaysright.com",
 }
 
 # ── Logging ───────────────────────────────────────────────────────────────────
@@ -108,76 +111,117 @@ def parse_entry_date(entry) -> datetime | None:
                 continue
     return None
 
-# ── Persistent Store ──────────────────────────────────────────────────────────
+# ── D1 Database ───────────────────────────────────────────────────────────────
 
-def load_store() -> list[dict]:
-    if not STORE_FILE.exists():
+def d1_url() -> str:
+    return (
+        f"https://api.cloudflare.com/client/v4/accounts/"
+        f"{CF_ACCOUNT_ID}/d1/database/{D1_DATABASE_ID}/query"
+    )
+
+def d1_headers() -> dict:
+    return {
+        "Authorization": f"Bearer {CF_API_TOKEN}",
+        "Content-Type": "application/json",
+    }
+
+async def d1_query(
+    session: aiohttp.ClientSession,
+    sql: str,
+    params: list = None,
+) -> list[dict]:
+    if not CF_ACCOUNT_ID or not CF_API_TOKEN or not D1_DATABASE_ID:
+        logging.warning("D1 credentials missing, skipping DB operation")
         return []
+
+    body = {"sql": sql}
+    if params:
+        body["params"] = params
+
     try:
-        with open(STORE_FILE, encoding="utf-8") as f:
-            data = json.load(f)
-        if isinstance(data, list):
-            return data
-        return []
-    except Exception:
-        logging.warning("Could not load posts_store.json, starting fresh")
+        async with session.post(
+            d1_url(),
+            headers=d1_headers(),
+            json=body,
+            timeout=aiohttp.ClientTimeout(total=30),
+        ) as response:
+            data = await response.json()
+            if not data.get("success"):
+                errors = data.get("errors", [])
+                logging.warning(f"D1 query failed: {errors}")
+                return []
+            results = data.get("result", [])
+            if results:
+                return results[0].get("results", [])
+            return []
+    except Exception as e:
+        logging.warning(f"D1 request error: {e}")
         return []
 
-def save_store(posts: list[dict]):
-    with open(STORE_FILE, "w", encoding="utf-8") as f:
-        json.dump(posts, f, indent=2, ensure_ascii=False)
+async def save_posts_to_d1(
+    session: aiohttp.ClientSession,
+    posts: list[dict],
+):
+    if not posts:
+        return
 
-def prune_store(posts: list[dict]) -> list[dict]:
-    cutoff = datetime.now(timezone.utc) - timedelta(days=RELEVANT_DAYS)
-    pruned = []
+    logging.info(f"Saving {len(posts)} posts to D1...")
+    saved = 0
+    failed = 0
+
     for post in posts:
-        try:
-            pub = datetime.fromisoformat(post["published"])
-            if pub.tzinfo is None:
-                pub = pub.replace(tzinfo=timezone.utc)
-            if pub > cutoff:
-                pruned.append(post)
-        except Exception:
-            continue
-    return pruned
+        content_text = strip_html(post.get("content", ""))
+        sql = """
+            INSERT INTO posts (
+                id, title, url, host, published,
+                feed_url, content_text, fetched_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(id) DO UPDATE SET
+                title = excluded.title,
+                content_text = CASE
+                    WHEN length(excluded.content_text) > length(posts.content_text)
+                    THEN excluded.content_text
+                    ELSE posts.content_text
+                END,
+                fetched_at = excluded.fetched_at
+        """
+        params = [
+            post["id"],
+            post["title"],
+            post["link"],
+            post["host"],
+            post["published"],
+            post["feed_url"],
+            content_text,
+            datetime.now(timezone.utc).isoformat(),
+        ]
 
-def merge_posts(old_posts: list[dict], new_posts: list[dict]) -> list[dict]:
-    merged = {}
-
-    for post in old_posts:
-        link = post.get("link")
-        if link:
-            merged[link] = post
-
-    for post in new_posts:
-        link = post.get("link")
-        if not link:
-            continue
-
-        existing = merged.get(link)
-        if not existing:
-            merged[link] = post
-            continue
-
-        old_content = existing.get("content", "")
-        new_content = post.get("content", "")
-
-        if len(strip_html(new_content)) > len(strip_html(old_content)):
-            merged[link] = post
+        result = await d1_query(session, sql, params)
+        if result is not None:
+            saved += 1
         else:
-            # Keep the better content, but refresh metadata if needed
-            updated = existing.copy()
-            updated["title"] = post.get("title") or existing.get("title")
-            updated["published"] = post.get("published") or existing.get("published")
-            updated["host"] = post.get("host") or existing.get("host")
-            updated["filename"] = post.get("filename") or existing.get("filename")
-            updated["feed_url"] = post.get("feed_url") or existing.get("feed_url")
-            merged[link] = updated
+            failed += 1
 
-    posts = list(merged.values())
-    posts = prune_store(posts)
-    posts.sort(key=lambda p: p["published"], reverse=True)
-    return posts
+    logging.info(f"D1 save complete: {saved} saved, {failed} failed")
+
+async def load_recent_posts_from_d1(
+    session: aiohttp.ClientSession,
+) -> list[dict]:
+    cutoff = (
+        datetime.now(timezone.utc) - timedelta(days=RELEVANT_DAYS)
+    ).isoformat()
+
+    sql = """
+        SELECT id, title, url, host, published, feed_url, content_text
+        FROM posts
+        WHERE published > ?
+        ORDER BY published DESC
+    """
+
+    rows = await d1_query(session, sql, [cutoff])
+    logging.info(f"Loaded {len(rows)} recent posts from D1")
+    return rows
 
 # ── HTTP ──────────────────────────────────────────────────────────────────────
 
@@ -222,15 +266,12 @@ def extract_entry_content(entry) -> str:
         val = getattr(entry, field, None)
         if not val:
             continue
-
         if isinstance(val, list):
             value = val[0].get("value", "")
         else:
             value = str(val)
-
         if value:
             return value
-
     return ""
 
 async def fetch_article_content(
@@ -275,7 +316,6 @@ async def process_entry(
     if not host:
         return None
 
-    # Exact-host block only
     if is_blocked_host(host):
         return None
 
@@ -291,7 +331,9 @@ async def process_entry(
 
     content = extract_entry_content(entry)
     if len(strip_html(content)) < 200:
-        scraped = await fetch_article_content(session, link, scrape_semaphore)
+        scraped = await fetch_article_content(
+            session, link, scrape_semaphore
+        )
         if scraped:
             content = scraped
 
@@ -360,7 +402,6 @@ async def fetch_all_posts(feeds: list[str]) -> list[dict]:
         if isinstance(result, Exception):
             logging.warning(f"Task error: {result}")
             continue
-
         for post in result:
             if post["link"] not in seen_links:
                 posts.append(post)
@@ -371,10 +412,31 @@ async def fetch_all_posts(feeds: list[str]) -> list[dict]:
 
 # ── HTML Generation ───────────────────────────────────────────────────────────
 
-def build_site(posts: list[dict], total_feeds: int):
+def build_site(posts: list[dict], d1_posts: list[dict], total_feeds: int):
     logging.info("Building site...")
 
-    recent_posts = prune_store(posts)
+    # Use freshly fetched posts for homepage
+    # D1 posts are stored permanently but homepage only shows recent
+    seen = set()
+    all_posts = []
+
+    for post in posts:
+        if post["link"] not in seen:
+            all_posts.append(post)
+            seen.add(post["link"])
+
+    cutoff = datetime.now(timezone.utc) - timedelta(days=RELEVANT_DAYS)
+    recent_posts = []
+    for post in all_posts:
+        try:
+            pub = datetime.fromisoformat(post["published"])
+            if pub.tzinfo is None:
+                pub = pub.replace(tzinfo=timezone.utc)
+            if pub > cutoff:
+                recent_posts.append(post)
+        except Exception:
+            continue
+
     recent_posts.sort(key=lambda p: p["published"], reverse=True)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -439,7 +501,9 @@ def build_site(posts: list[dict], total_feeds: int):
     index_tmpl = Template(INDEX_TMPL.read_text(encoding="utf-8"))
     html = index_tmpl.render(
         posts=display_posts,
-        last_updated=datetime.now(EAT).strftime("%B %d, %Y · %I:%M %p EAT"),
+        last_updated=datetime.now(EAT).strftime(
+            "%B %d, %Y · %I:%M %p EAT"
+        ),
         feeds_collected=total_feeds,
         total_feeds=total_feeds,
     )
@@ -463,17 +527,18 @@ async def main():
         logging.error("No feeds found in feeds.txt - exiting")
         return
 
-    old_posts = load_store()
-    logging.info(f"Loaded {len(old_posts)} stored posts")
-
+    # Fetch fresh posts from feeds
     new_posts = await fetch_all_posts(feeds)
     logging.info(f"Fetched {len(new_posts)} unique posts this run")
 
-    all_posts = merge_posts(old_posts, new_posts)
-    save_store(all_posts)
-    logging.info(f"Saved {len(all_posts)} accumulated recent posts")
+    # Save to D1 and load recent for display
+    connector = aiohttp.TCPConnector(limit=10)
+    async with aiohttp.ClientSession(connector=connector) as session:
+        await save_posts_to_d1(session, new_posts)
+        d1_posts = await load_recent_posts_from_d1(session)
 
-    build_site(all_posts, total)
+    # Build site from fresh posts
+    build_site(new_posts, d1_posts, total)
     logging.info("Done")
 
 if __name__ == "__main__":
