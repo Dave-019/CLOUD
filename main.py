@@ -43,10 +43,40 @@ D1_DATABASE_ID = os.environ.get("D1_DATABASE_ID", "")
 # Exact host matches only
 BLOCKLIST = {
     "www.metafilter.com",
+    "www.vinitnair.com",
     "twitter.com",
+    "www.forethought.org",
+    "michaelharley.net",
     "x.com",
+    "stream.syscoi.com",
+    "paulkedrosky.com",
+    "disassociated.com",
+    "www.tjmaher.com",
+    "onemanandhisblog.com",
+    "www.cautiousoptimism.news",
+    "hultberg.org",
+    "diego-pacheco.blogspot.com",
+    "simonwillison.net",
     "www.mothersalwaysright.com",
+    "www.randalolson.com",
+    "robservatory.com",
+    "hankquinlan.github.io",
+    "shellypalmer.com",
+    "thezvi.wordpress.com",
+    "www.redferret.net",
+    "datamonkeysite.com",
+    "pivot-to-ai.com",
+    "changkun.de",
+    "mindblog.dericbownds.net",
+    "www.freezenet.ca",
+    "lassala.net",
+    "lockboxx.blogspot.com",
+    "anthonybalducci.blogspot.com",
+    "www.tjmaher.com",
+    "shellypalmer.com",
+
 }
+
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 
