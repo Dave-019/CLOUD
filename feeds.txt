@@ -1,9 +1,8 @@
 https://rajhackingarticles.blogspot.com/feeds/posts/default
 https://blog.nviso.eu/feed/
 https://www.sciencedaily.com/rss/computers_math/encryption.xml
-http://www.exploit-db.com/rss.xml
 https://cxsecurity.com/wlb/rss/all/
- https://thecybersecguru.com/feed/atom
+https://thecybersecguru.com/feed/atom
 https://www.cyberkendra.com/feeds/posts/default
 https://ysamm.com/feed.xml
 https://labs.itresit.es/feed/atom
@@ -13,14 +12,12 @@ https://www.bellingcat.com/feed
 https://binary.ninja/feed.xml
 https://www.antitree.com/index.xml
 https://news.crunchbase.com/feed
-https://feeds.feedburner.com/cyber-security-news
 https://certitude.consulting/blog/en/feed
 https://blog.badsectorlabs.com/feeds/all.atom.xml
 https://code-white.com/index.xml
 https://eaton-works.com/feed.atom
 https://www.evilsocket.net/atom.xml
 https://hackingthe.cloud/feed_rss_created.xml
-https://hackaday.com/feed
 https://maia.crimew.gay/feed.xml
 https://mrbruh.com/index.xml
 https://neodyme.io/rss.xml
@@ -54,11 +51,9 @@ https://kentcdodds.com/rss
 https://assertfail.gewalli.se/atom
 https://brandonrohrer.com/feed.xml
 https://blog.cloudflare.com/rss
-https://www.nature.com/nature.rss
 https://enigmaticcode.wordpress.com/atom
 https://backreaction.blogspot.com/rss.xml
 https://dispatchesfromturtleisland.blogspot.com/feeds/posts/default
-https://www.nature.com/subjects/computational-biology-and-bioinformatics.rss
 https://www.jitterywhiteguymusic.com/feeds/posts/default
 https://www.razor.blog/atom.xml
 https://www.messynessychic.com/feed
