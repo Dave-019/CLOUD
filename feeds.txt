@@ -51,7 +51,6 @@ https://insearchofsecrets.com/feed
 https://kentcdodds.com/rss
 https://assertfail.gewalli.se/atom
 https://brandonrohrer.com/feed.xml
-https://blog.cloudflare.com/rss
 https://enigmaticcode.wordpress.com/atom
 https://backreaction.blogspot.com/rss.xml
 https://dispatchesfromturtleisland.blogspot.com/feeds/posts/default
@@ -79,7 +78,6 @@ https://www.ntietz.com/atom.xml
 https://social.alexschroeder.ch/@alex/feed.rss
 https://alexwlchan.net/atom.xml
 https://82mhz.net/index.xml
-https://www.i-programmer.info/index.php?feed_id=3&format=raw&option=com_ninjarsssyndicator
 https://www.cavelab.dev/index.xml
 https://feeds.thefinanser.com/feed
 https://abnormalreturns.com/feed/atom
