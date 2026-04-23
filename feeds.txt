@@ -83,3 +83,10 @@ https://feeds.thefinanser.com/feed
 https://abnormalreturns.com/feed/atom
 https://affordanything.com/feed/atom
 https://www.tbwns.com/feed
+https://isc.sans.edu/rssfeed_full.xml
+http://feeds.kottke.org/main
+https://blog.benjojo.co.uk/rss.xml
+https://rb.ax/index.xml
+https://blog.miljko.org/feed.xml
+https://twostopbits.com/rss
+
