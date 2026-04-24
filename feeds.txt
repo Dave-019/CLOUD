@@ -65,12 +65,10 @@ http://albert-david.blogspot.com/atom.xml
 https://jonpauluritis.com/feed.xml
 https://www.geekinheels.com/feed/atom
 https://kumarletter.com/posts.rss
-https://56k-modem.online/rss
 https://bookofjoe2.blogspot.com/atom.xml
 https://classicfilmandtvcorner.wordpress.com/atom
 https://dulltooldimbulb.blogspot.com/atom.xml
 https://manualdousuario.net/en/feed/
-https://www.weirduniverse.net/blog/rss_2.0
 https://economistwritingeveryday.com/feed/
 http://strangeco.blogspot.com/feeds/posts/default
 https://jrvarma.wordpress.com/feed
@@ -84,7 +82,7 @@ https://abnormalreturns.com/feed/atom
 https://affordanything.com/feed/atom
 https://www.tbwns.com/feed
 https://isc.sans.edu/rssfeed_full.xml
-http://feeds.kottke.org/main
+https://ai.mee.nu/feed/rss
 https://blog.benjojo.co.uk/rss.xml
 https://rb.ax/index.xml
 https://blog.miljko.org/feed.xml
