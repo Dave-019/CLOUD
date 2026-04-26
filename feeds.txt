@@ -85,6 +85,6 @@ https://isc.sans.edu/rssfeed_full.xml
 https://ai.mee.nu/feed/rss
 https://blog.benjojo.co.uk/rss.xml
 https://rb.ax/index.xml
-https://blog.miljko.org/feed.xml
+https://www.livescience.com/feeds.xml
 https://twostopbits.com/rss
 
