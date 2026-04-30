@@ -10,7 +10,6 @@ https://labs.cognisys.group/feed
 https://www.bellingcat.com/feed
 https://binary.ninja/feed.xml
 https://www.antitree.com/index.xml
-https://news.crunchbase.com/feed
 https://certitude.consulting/blog/en/feed
 https://blog.badsectorlabs.com/feeds/all.atom.xml
 https://code-white.com/index.xml
@@ -22,7 +21,6 @@ https://mrbruh.com/index.xml
 https://neodyme.io/rss.xml
 https://www.mdsec.co.uk/feed
 https://blog.nviso.eu/feed
-https://restofworld.org/feed/latest
 https://projectblack.io/blog/rss
 https://spaceraccoon.dev/feed.xml
 https://starlabs.sg/index.xml
@@ -55,7 +53,6 @@ https://enigmaticcode.wordpress.com/atom
 https://backreaction.blogspot.com/rss.xml
 https://dispatchesfromturtleisland.blogspot.com/feeds/posts/default
 https://www.jitterywhiteguymusic.com/feeds/posts/default
-https://www.razor.blog/atom.xml
 https://www.messynessychic.com/feed
 https://carlkingdom.com/feed
 https://idiotking.org/feed
@@ -65,7 +62,6 @@ http://albert-david.blogspot.com/atom.xml
 https://jonpauluritis.com/feed.xml
 https://www.geekinheels.com/feed/atom
 https://kumarletter.com/posts.rss
-https://bookofjoe2.blogspot.com/atom.xml
 https://classicfilmandtvcorner.wordpress.com/atom
 https://dulltooldimbulb.blogspot.com/atom.xml
 https://manualdousuario.net/en/feed/
@@ -73,7 +69,6 @@ https://economistwritingeveryday.com/feed/
 http://strangeco.blogspot.com/feeds/posts/default
 https://jrvarma.wordpress.com/feed
 https://www.ntietz.com/atom.xml
-https://social.alexschroeder.ch/@alex/feed.rss
 https://alexwlchan.net/atom.xml
 https://82mhz.net/index.xml
 https://www.cavelab.dev/index.xml
@@ -85,6 +80,5 @@ https://isc.sans.edu/rssfeed_full.xml
 https://ai.mee.nu/feed/rss
 https://blog.benjojo.co.uk/rss.xml
 https://rb.ax/index.xml
-https://www.livescience.com/feeds.xml
 https://twostopbits.com/rss
 
