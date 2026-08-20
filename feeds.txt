@@ -81,4 +81,5 @@ https://ai.mee.nu/feed/rss
 https://blog.benjojo.co.uk/rss.xml
 https://rb.ax/index.xml
 https://twostopbits.com/rss
+https://feeds.feedburner.com/TheHackersNews
 
