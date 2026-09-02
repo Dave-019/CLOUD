@@ -82,4 +82,11 @@ https://blog.benjojo.co.uk/rss.xml
 https://rb.ax/index.xml
 https://twostopbits.com/rss
 https://feeds.feedburner.com/TheHackersNews
+https://hello-fri-end.github.io/feeds/all.atom.xml
+https://dbushell.com/rss.xml
+https://potsandpansbyccg.com/feed/atom/
+https://muddy.jprs.me/index.xml
+https://jamesmccaffreyblog.com/feed/
+https://www.birdsoutsidemywindow.org/feed/
+https://sebsite.pw/feed.xml
 
