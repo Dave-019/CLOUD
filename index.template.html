@@ -12,14 +12,12 @@
 
   <!-- Header -->
   <header class="site-header">
-  
     <div class="site-meta">
-      Last updated: {{ last_updated }} ·
- 
+      Last updated: {{ last_updated }}
     </div>
   </header>
 
-  <!-- Skeleton -->
+  <!-- Skeleton Loading State -->
   <ul class="skeleton-list" id="skeleton">
     {% for i in range(10) %}
     <li>
@@ -37,20 +35,15 @@
     {% for post in posts %}
     <li class="post-item">
 
-      {% if post.content %}
-      <a class="post-title" href="posts/{{ post.filename }}">
-        {{- post.title -}}
-      </a>
-      {% else %}
+      <!-- Always link directly to original source -->
       <a class="post-title"
          href="{{ post.link }}"
          target="_blank"
          rel="noopener noreferrer">
         {{- post.title -}}
       </a>
-      {% endif %}
 
-  
+
 
     </li>
     {% endfor %}
@@ -58,7 +51,7 @@
 
   <!-- Footer -->
   <footer class="site-footer">
-    <p>source
+    <p>
       <a href="https://github.com/Dave-019/my-rss-feeds">source</a>
     </p>
   </footer>
@@ -103,7 +96,7 @@
         if (iso) el.textContent = timeAgo(iso);
       });
 
-      // Simple lazy load, no wrapper no skeleton
+      // Simple lazy load
       document.querySelectorAll('img').forEach(function (img) {
         img.loading = 'lazy';
         img.addEventListener('error', function () {
