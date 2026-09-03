@@ -11,7 +11,6 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from urllib.parse import urlparse
 from jinja2 import Template
-from readability import Document
 from zoneinfo import ZoneInfo
 
 sys.stdout.reconfigure(encoding="utf-8")
@@ -19,17 +18,14 @@ sys.stdout.reconfigure(encoding="utf-8")
 # ── Config ────────────────────────────────────────────────────────────────────
 
 OUTPUT_DIR = Path("docs")
-POSTS_DIR = OUTPUT_DIR / "posts"
 LOG_FILE = OUTPUT_DIR / "log.txt"
 FEEDS_FILE = Path("feeds.txt")
 INDEX_TMPL = Path("index.template.html")
-POST_TMPL = Path("post.template.html")
 STYLES_FILE = Path("styles.css")
 
 RELEVANT_DAYS = 1
 TIMEOUT_SECS = 25
 MAX_FEED_CONCURRENT = 20
-MAX_SCRAPE_CONCURRENT = 5
 MAX_RETRIES = 2
 EAT = ZoneInfo("Africa/Nairobi")
 
@@ -40,43 +36,12 @@ CF_ACCOUNT_ID = os.environ.get("CLOUDFLARE_ACCOUNT_ID", "")
 CF_API_TOKEN = os.environ.get("CLOUDFLARE_API_TOKEN", "")
 D1_DATABASE_ID = os.environ.get("D1_DATABASE_ID", "")
 
-# Exact host matches only
 BLOCKLIST = {
     "www.metafilter.com",
-    "www.vinitnair.com",
     "twitter.com",
-    "www.forethought.org",
-    "michaelharley.net",
     "x.com",
-    "stream.syscoi.com",
-    "paulkedrosky.com",
-    "disassociated.com",
-    "www.tjmaher.com",
-    "onemanandhisblog.com",
-    "www.cautiousoptimism.news",
-    "hultberg.org",
-    "diego-pacheco.blogspot.com",
     "simonwillison.net",
-    "www.mothersalwaysright.com",
-    "www.randalolson.com",
-    "robservatory.com",
-    "hankquinlan.github.io",
-    "shellypalmer.com",
-    "thezvi.wordpress.com",
-    "www.redferret.net",
-    "datamonkeysite.com",
-    "pivot-to-ai.com",
-    "changkun.de",
-    "mindblog.dericbownds.net",
-    "www.freezenet.ca",
-    "lassala.net",
-    "lockboxx.blogspot.com",
-    "anthonybalducci.blogspot.com",
-    "www.tjmaher.com",
-    "shellypalmer.com",
-
 }
-
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 
@@ -92,16 +57,6 @@ def setup_logging():
     )
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
-
-def title_to_filename(title: str) -> str:
-    s = re.sub(r"[^\w\d]", " ", title)
-    s = s.lower()
-    s = "-".join(s.split()) + ".html"
-    s = s.removeprefix("show-hn-")
-    s = s.removeprefix("ask-hn-")
-    if len(s) > 100:
-        s = s[:96] + ".html"
-    return s
 
 def strip_html(html: str) -> str:
     text = re.sub(r"<[^>]+>", " ", html)
@@ -189,10 +144,7 @@ async def d1_query(
         logging.warning(f"D1 request error: {e}")
         return []
 
-async def save_posts_to_d1(
-    session: aiohttp.ClientSession,
-    posts: list[dict],
-):
+async def save_posts_to_d1(session: aiohttp.ClientSession, posts: list[dict]):
     if not posts:
         return
 
@@ -201,7 +153,6 @@ async def save_posts_to_d1(
     failed = 0
 
     for post in posts:
-        content_text = strip_html(post.get("content", ""))
         sql = """
             INSERT INTO posts (
                 id, title, url, host, published,
@@ -210,11 +161,6 @@ async def save_posts_to_d1(
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(id) DO UPDATE SET
                 title = excluded.title,
-                content_text = CASE
-                    WHEN length(excluded.content_text) > length(posts.content_text)
-                    THEN excluded.content_text
-                    ELSE posts.content_text
-                END,
                 fetched_at = excluded.fetched_at
         """
         params = [
@@ -224,7 +170,7 @@ async def save_posts_to_d1(
             post["host"],
             post["published"],
             post["feed_url"],
-            content_text,
+            post.get("summary", ""),
             datetime.now(timezone.utc).isoformat(),
         ]
 
@@ -236,31 +182,13 @@ async def save_posts_to_d1(
 
     logging.info(f"D1 save complete: {saved} saved, {failed} failed")
 
-async def load_recent_posts_from_d1(
-    session: aiohttp.ClientSession,
-) -> list[dict]:
-    cutoff = (
-        datetime.now(timezone.utc) - timedelta(days=RELEVANT_DAYS)
-    ).isoformat()
-
-    sql = """
-        SELECT id, title, url, host, published, feed_url, content_text
-        FROM posts
-        WHERE published > ?
-        ORDER BY published DESC
-    """
-
-    rows = await d1_query(session, sql, [cutoff])
-    logging.info(f"Loaded {len(rows)} recent posts from D1")
-    return rows
-
-# ── HTTP ──────────────────────────────────────────────────────────────────────
+# ── HTTP & Feed Fetching ──────────────────────────────────────────────────────
 
 async def fetch_text(
     session: aiohttp.ClientSession,
     url: str,
     timeout_secs: int = TIMEOUT_SECS,
-) -> tuple[int, str, str]:
+) -> tuple[int, str]:
     headers = {"User-Agent": USER_AGENT}
 
     for attempt in range(MAX_RETRIES + 1):
@@ -271,102 +199,35 @@ async def fetch_text(
                 timeout=aiohttp.ClientTimeout(total=timeout_secs),
             ) as response:
                 text = await response.text(errors="ignore")
-                content_type = response.headers.get("content-type", "")
-                return response.status, text, content_type
-
-        except asyncio.TimeoutError:
-            if attempt < MAX_RETRIES:
-                await asyncio.sleep(1 + attempt)
-                continue
-            logging.warning(f"Timeout: {url}")
-            return 0, "", ""
+                return response.status, text
 
         except Exception as e:
             if attempt < MAX_RETRIES:
                 await asyncio.sleep(1 + attempt)
                 continue
             logging.warning(f"Fetch failed {url}: {e}")
-            return 0, "", ""
+            return 0, ""
 
-    return 0, "", ""
+    return 0, ""
 
-# ── Content Extraction ────────────────────────────────────────────────────────
-
-def extract_entry_content(entry) -> str:
-    for field in ["content", "summary"]:
-        val = getattr(entry, field, None)
-        if not val:
-            continue
-        if isinstance(val, list):
-            value = val[0].get("value", "")
-        else:
-            value = str(val)
-        if value:
-            return value
-    return ""
-
-async def fetch_article_content(
-    session: aiohttp.ClientSession,
-    url: str,
-    semaphore: asyncio.Semaphore,
-) -> str:
-    host = parse_host(url)
-    if not host or is_blocked_host(host):
-        return ""
-
-    async with semaphore:
-        status, html, content_type = await fetch_text(session, url)
-        if status != 200:
-            return ""
-        if "text/html" not in content_type:
-            return ""
-
-        try:
-            doc = Document(html)
-            content = doc.summary()
-            if not content:
-                return ""
-            if len(strip_html(content)) < 200:
-                return ""
-            return content
-        except Exception as e:
-            logging.info(f"Could not parse article {url}: {e}")
-            return ""
-
-async def process_entry(
-    session: aiohttp.ClientSession,
-    entry,
-    feed_url: str,
-    scrape_semaphore: asyncio.Semaphore,
-) -> dict | None:
+def process_entry(entry, feed_url: str) -> dict | None:
     link = getattr(entry, "link", None)
     if not link:
         return None
 
     host = parse_host(link)
-    if not host:
-        return None
-
-    if is_blocked_host(host):
+    if not host or is_blocked_host(host):
         return None
 
     published = parse_entry_date(entry)
-    if not published:
-        return None
-
-    if not is_recent(published):
+    if not published or not is_recent(published):
         return None
 
     title = getattr(entry, "title", "Untitled")
     title = re.sub(r"<[^>]+>", "", title).strip() or "Untitled"
 
-    content = extract_entry_content(entry)
-    if len(strip_html(content)) < 200:
-        scraped = await fetch_article_content(
-            session, link, scrape_semaphore
-        )
-        if scraped:
-            content = scraped
+    # Grab short summary if available
+    summary = strip_html(getattr(entry, "summary", ""))
 
     return {
         "id": url_to_id(link),
@@ -374,24 +235,18 @@ async def process_entry(
         "title": title,
         "published": published.isoformat(),
         "host": host,
-        "content": content,
-        "filename": title_to_filename(title),
+        "summary": summary,
         "feed_url": feed_url,
     }
-
-# ── Feed Fetching ─────────────────────────────────────────────────────────────
 
 async def fetch_feed(
     session: aiohttp.ClientSession,
     feed_url: str,
     feed_semaphore: asyncio.Semaphore,
-    scrape_semaphore: asyncio.Semaphore,
 ) -> list[dict]:
     async with feed_semaphore:
-        status, text, _ = await fetch_text(session, feed_url)
+        status, text = await fetch_text(session, feed_url)
         if status != 200:
-            if status:
-                logging.warning(f"HTTP {status} for {feed_url}")
             return []
 
         try:
@@ -403,27 +258,20 @@ async def fetch_feed(
         posts = []
         for entry in feed.entries:
             try:
-                post = await process_entry(
-                    session, entry, feed_url, scrape_semaphore
-                )
+                post = process_entry(entry, feed_url)
                 if post:
                     posts.append(post)
             except Exception as e:
                 logging.warning(f"Entry error in {feed_url}: {e}")
 
-        logging.info(f"Got {len(posts)} posts from {feed_url}")
         return posts
 
 async def fetch_all_posts(feeds: list[str]) -> list[dict]:
     feed_semaphore = asyncio.Semaphore(MAX_FEED_CONCURRENT)
-    scrape_semaphore = asyncio.Semaphore(MAX_SCRAPE_CONCURRENT)
     connector = aiohttp.TCPConnector(limit=MAX_FEED_CONCURRENT)
 
     async with aiohttp.ClientSession(connector=connector) as session:
-        tasks = [
-            fetch_feed(session, feed_url, feed_semaphore, scrape_semaphore)
-            for feed_url in feeds
-        ]
+        tasks = [fetch_feed(session, feed_url, feed_semaphore) for feed_url in feeds]
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
     posts = []
@@ -431,7 +279,6 @@ async def fetch_all_posts(feeds: list[str]) -> list[dict]:
 
     for result in results:
         if isinstance(result, Exception):
-            logging.warning(f"Task error: {result}")
             continue
         for post in result:
             if post["link"] not in seen_links:
@@ -443,22 +290,22 @@ async def fetch_all_posts(feeds: list[str]) -> list[dict]:
 
 # ── HTML Generation ───────────────────────────────────────────────────────────
 
-def build_site(posts: list[dict], d1_posts: list[dict], total_feeds: int):
-    logging.info("Building site...")
+def build_site(posts: list[dict], total_feeds: int):
+    logging.info("Building homepage...")
 
-    # Use freshly fetched posts for homepage
-    # D1 posts are stored permanently but homepage only shows recent
-    seen = set()
-    all_posts = []
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    for post in posts:
-        if post["link"] not in seen:
-            all_posts.append(post)
-            seen.add(post["link"])
+    # Copy CSS
+    if STYLES_FILE.exists():
+        (OUTPUT_DIR / "styles.css").write_text(
+            STYLES_FILE.read_text(encoding="utf-8"),
+            encoding="utf-8",
+        )
 
+    # Filter for last 24h
     cutoff = datetime.now(timezone.utc) - timedelta(days=RELEVANT_DAYS)
     recent_posts = []
-    for post in all_posts:
+    for post in posts:
         try:
             pub = datetime.fromisoformat(post["published"])
             if pub.tzinfo is None:
@@ -470,80 +317,16 @@ def build_site(posts: list[dict], d1_posts: list[dict], total_feeds: int):
 
     recent_posts.sort(key=lambda p: p["published"], reverse=True)
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    POSTS_DIR.mkdir(parents=True, exist_ok=True)
-
-    if STYLES_FILE.exists():
-        (OUTPUT_DIR / "styles.css").write_text(
-            STYLES_FILE.read_text(encoding="utf-8"),
-            encoding="utf-8",
-        )
-
-    active_filenames = set()
-    for post in recent_posts:
-        if post.get("content"):
-            active_filenames.add(post["filename"])
-
-    for html_file in POSTS_DIR.glob("*.html"):
-        if html_file.name not in active_filenames:
-            html_file.unlink()
-            logging.info(f"Deleted old post: {html_file.name}")
-
-    post_tmpl = Template(POST_TMPL.read_text(encoding="utf-8"))
-
-    written_filenames = set()
-    for post in recent_posts:
-        if not post.get("content"):
-            logging.info(f"Skipping post, no content: {post['link']}")
-            continue
-
-        filename = post["filename"]
-        if filename in written_filenames:
-            base = filename.replace(".html", "")
-            filename = f"{base}-2.html"
-            post["filename"] = filename
-
-        written_filenames.add(filename)
-
-        try:
-            html = post_tmpl.render(
-                title=post["title"],
-                original=post["link"],
-                content=post["content"],
-            )
-            (POSTS_DIR / filename).write_text(html, encoding="utf-8")
-        except Exception as e:
-            logging.warning(f"Could not write post {filename}: {e}")
-
-    display_posts = []
-    for post in recent_posts:
-        p = post.copy()
-        try:
-            pub = datetime.fromisoformat(post["published"])
-            if pub.tzinfo is None:
-                pub = pub.replace(tzinfo=timezone.utc)
-            p["published_iso"] = pub.isoformat()
-            p["published"] = ""
-        except Exception:
-            p["published_iso"] = ""
-            p["published"] = ""
-        display_posts.append(p)
-
+    # Render index.html
     index_tmpl = Template(INDEX_TMPL.read_text(encoding="utf-8"))
     html = index_tmpl.render(
-        posts=display_posts,
-        last_updated=datetime.now(EAT).strftime(
-            "%B %d, %Y · %I:%M %p EAT"
-        ),
+        posts=recent_posts,
+        last_updated=datetime.now(EAT).strftime("%B %d, %Y · %I:%M %p EAT"),
         feeds_collected=total_feeds,
         total_feeds=total_feeds,
     )
     (OUTPUT_DIR / "index.html").write_text(html, encoding="utf-8")
-
-    logging.info(
-        f"Site built: {len(display_posts)} posts, "
-        f"{len(written_filenames)} post pages written"
-    )
+    logging.info(f"Site built: {len(recent_posts)} posts displayed.")
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
@@ -555,21 +338,18 @@ async def main():
     logging.info(f"Loaded {total} feeds")
 
     if total == 0:
-        logging.error("No feeds found in feeds.txt - exiting")
         return
 
-    # Fetch fresh posts from feeds
     new_posts = await fetch_all_posts(feeds)
-    logging.info(f"Fetched {len(new_posts)} unique posts this run")
+    logging.info(f"Fetched {len(new_posts)} posts")
 
-    # Save to D1 and load recent for display
+    # Save to D1
     connector = aiohttp.TCPConnector(limit=10)
     async with aiohttp.ClientSession(connector=connector) as session:
         await save_posts_to_d1(session, new_posts)
-        d1_posts = await load_recent_posts_from_d1(session)
 
-    # Build site from fresh posts
-    build_site(new_posts, d1_posts, total)
+    # Build homepage only
+    build_site(new_posts, total)
     logging.info("Done")
 
 if __name__ == "__main__":
