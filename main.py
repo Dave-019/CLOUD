@@ -26,7 +26,7 @@ INDEX_TMPL = Path("index.template.html")
 POST_TMPL = Path("post.template.html")
 STYLES_FILE = Path("styles.css")
 
-RELEVANT_DAYS = 2
+RELEVANT_DAYS = 1
 TIMEOUT_SECS = 25
 MAX_FEED_CONCURRENT = 20
 MAX_SCRAPE_CONCURRENT = 5
