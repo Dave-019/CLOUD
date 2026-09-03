@@ -89,4 +89,49 @@ https://muddy.jprs.me/index.xml
 https://jamesmccaffreyblog.com/feed/
 https://www.birdsoutsidemywindow.org/feed/
 https://sebsite.pw/feed.xml
+http://blog.eterm.uk/feed.xml
+ http://blog.emilianbold.ro/atom.xml
+http://churchofbsd.blogspot.com/feeds/posts/default
+http://flagrantsystemerror.com/rss.xml
+http://goodyduru.com/index.xml
+http://marcosh.github.io/feed.xml
+http://modern-c.blogspot.com/atom.xml
+http://pascal.hansotten.com/feed/
+http://patg.net/feed.xml
+http://sebmestre.blogspot.com/atom.xml
+http://www.breakintoprogram.co.uk/feed
+http://www.corsix.org/rss.xml
+http://www.reasoning.page/feed/
+http://www.technoblogy.com/rss?KVM+3
+ https://00f.net/rss.xml
+https://0xboku.com/feed.xml
+https://0xkiire.com/rss.xml
+https://0xkrt26.github.io/math_behind_security/feed.xml
+https://30fps.net/atom.xml
+https://4m4.it/index.xml
+https://8051enthusiast.github.io/feed.xml
+https://aarol.dev/index.xml
+https://abstractnonsense.xyz/index.xml
+https://aftermathlabs.net/index.xml
+https://agraphicsguynotes.com/index.xml
+https://alec.is/index.xml
+ https://alexhwoods.com/rss.xml
+https://alexjreid.dev/index.xml
+https://alexlitzenberger.com/blog/rss.xml
+https://alexschapiro.com/feed.xml
+https://amalchandran.xyz/index.xml
+https://anagogistis.com/index.xml
+https://anuragbhatia.com/index.xml
+https://armaangomes.com/rss.xml
+https://arthur.pizza/index.xml
+https://astrid.tech/feed.xml
+https://atul-atul.github.io/feed
+https://aykevl.nl/index.xml
+https://bas.westerbaan.name/feed.xml
+https://battlepenguin.com/feed.xml
+https://bd103.dev/atom.xml
+https://benjamingeer.name/en/index.xml
+https://dnim.dev/rss.xml
+https://johnkavanagh.co.uk/rss.xml
+https://www.0xkato.xyz/feed.xml	
 
