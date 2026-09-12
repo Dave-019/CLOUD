@@ -1,7 +1,6 @@
 https://rajhackingarticles.blogspot.com/feeds/posts/default
 https://blog.nviso.eu/feed/
 https://www.sciencedaily.com/rss/computers_math/encryption.xml
-https://thecybersecguru.com/feed/atom
 https://www.cyberkendra.com/feeds/posts/default
 https://ysamm.com/feed.xml
 https://labs.itresit.es/feed/atom
