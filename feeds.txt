@@ -50,7 +50,6 @@ https://brandonrohrer.com/feed.xml
 https://enigmaticcode.wordpress.com/atom
 https://backreaction.blogspot.com/rss.xml
 https://dispatchesfromturtleisland.blogspot.com/feeds/posts/default
-https://www.jitterywhiteguymusic.com/feeds/posts/default
 https://www.messynessychic.com/feed
 https://carlkingdom.com/feed
 https://idiotking.org/feed
@@ -58,7 +57,6 @@ https://asymptomatic.net/feed.xml
 https://feeds.feedburner.com/TheVisualScienceLab
 http://albert-david.blogspot.com/atom.xml
 https://jonpauluritis.com/feed.xml
-https://www.geekinheels.com/feed/atom
 https://kumarletter.com/posts.rss
 https://classicfilmandtvcorner.wordpress.com/atom
 https://dulltooldimbulb.blogspot.com/atom.xml
@@ -69,7 +67,6 @@ https://www.ntietz.com/atom.xml
 https://alexwlchan.net/atom.xml
 https://82mhz.net/index.xml
 https://www.cavelab.dev/index.xml
-https://feeds.thefinanser.com/feed
 https://affordanything.com/feed/atom
 https://www.tbwns.com/feed
 https://ai.mee.nu/feed/rss
