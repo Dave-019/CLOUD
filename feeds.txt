@@ -1,7 +1,6 @@
 https://rajhackingarticles.blogspot.com/feeds/posts/default
 https://blog.nviso.eu/feed/
 https://www.sciencedaily.com/rss/computers_math/encryption.xml
-https://www.cyberkendra.com/feeds/posts/default
 https://ysamm.com/feed.xml
 https://labs.itresit.es/feed/atom
 https://badoption.eu/feed.xml
@@ -64,7 +63,6 @@ https://kumarletter.com/posts.rss
 https://classicfilmandtvcorner.wordpress.com/atom
 https://dulltooldimbulb.blogspot.com/atom.xml
 https://manualdousuario.net/en/feed/
-https://economistwritingeveryday.com/feed/
 http://strangeco.blogspot.com/feeds/posts/default
 https://jrvarma.wordpress.com/feed
 https://www.ntietz.com/atom.xml
@@ -72,10 +70,8 @@ https://alexwlchan.net/atom.xml
 https://82mhz.net/index.xml
 https://www.cavelab.dev/index.xml
 https://feeds.thefinanser.com/feed
-https://abnormalreturns.com/feed/atom
 https://affordanything.com/feed/atom
 https://www.tbwns.com/feed
-https://isc.sans.edu/rssfeed_full.xml
 https://ai.mee.nu/feed/rss
 https://blog.benjojo.co.uk/rss.xml
 https://rb.ax/index.xml
