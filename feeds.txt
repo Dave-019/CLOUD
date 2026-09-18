@@ -39,7 +39,6 @@ https://nbailey.ca/index.xml
 https://billbennett.co.nz/feed
 https://subseacables.blogspot.com/atom.xml
 https://solar.lowtechmagazine.com/feeds/all-en.atom.xml
-https://spectrum.ieee.org/customfeeds/feed/all-topics/rss
 https://essenceia.github.io/index.xml
 https://beny23.github.io/index.xml
 https://campedersen.com/feed.xml
@@ -59,9 +58,7 @@ http://albert-david.blogspot.com/atom.xml
 https://jonpauluritis.com/feed.xml
 https://kumarletter.com/posts.rss
 https://classicfilmandtvcorner.wordpress.com/atom
-https://dulltooldimbulb.blogspot.com/atom.xml
 https://manualdousuario.net/en/feed/
-http://strangeco.blogspot.com/feeds/posts/default
 https://jrvarma.wordpress.com/feed
 https://www.ntietz.com/atom.xml
 https://alexwlchan.net/atom.xml
