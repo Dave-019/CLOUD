@@ -18,7 +18,6 @@ https://maia.crimew.gay/feed.xml
 https://mrbruh.com/index.xml
 https://neodyme.io/rss.xml
 https://www.mdsec.co.uk/feed
-https://blog.nviso.eu/feed
 https://projectblack.io/blog/rss
 https://spaceraccoon.dev/feed.xml
 https://starlabs.sg/index.xml
@@ -46,8 +45,6 @@ https://kentcdodds.com/rss
 https://assertfail.gewalli.se/atom
 https://brandonrohrer.com/feed.xml
 https://enigmaticcode.wordpress.com/atom
-https://backreaction.blogspot.com/rss.xml
-https://dispatchesfromturtleisland.blogspot.com/feeds/posts/default
 https://www.messynessychic.com/feed
 https://carlkingdom.com/feed
 https://idiotking.org/feed
@@ -72,9 +69,7 @@ https://twostopbits.com/rss
 https://hello-fri-end.github.io/feeds/all.atom.xml
 https://dbushell.com/rss.xml
 https://potsandpansbyccg.com/feed/atom/
-https://muddy.jprs.me/index.xml
 https://jamesmccaffreyblog.com/feed/
-https://www.birdsoutsidemywindow.org/feed/
 https://sebsite.pw/feed.xml
 http://blog.eterm.uk/feed.xml
 http://blog.emilianbold.ro/atom.xml
@@ -120,7 +115,7 @@ https://bd103.dev/atom.xml
 https://benjamingeer.name/en/index.xml
 https://dnim.dev/rss.xml
 https://johnkavanagh.co.uk/rss.xml
-https://www.0xkato.xyz/feed.xml	
+https://www.0xkato.xyz/feed.xml
 https://blog.nlnetlabs.nl/rss
 https://blog.robur.coop/feed.xml
 https://0x434b.dev/rss
@@ -128,7 +123,6 @@ https://blog.trailofbits.com/index.xml
 https://blog.silentsignal.eu/feed.xml
 https://blog.syss.com/feed.xml
 https://blog.scrt.ch/feed
-https://blog.nviso.eu/feed
 https://blog.blacklanternsecurity.com/feed
 https://blog.securityonion.net/feeds/posts/default
 https://jerrygamblin.com/feed
@@ -199,7 +193,6 @@ https://blog.cryptographyengineering.com/feed
 https://dmitry.gr/rss.php
 https://en.blog.nic.cz/feed
 https://blog.didierstevens.com/feed
-https://binary.ninja/feed.xml
 https://blog.0patch.com/feeds/posts/default
 https://blog.joeware.net/feed
 https://blog.compass-security.com/feed
@@ -208,7 +201,6 @@ https://blog.includesecurity.com/feed
 https://x41-dsec.de/feed.xml
 https://blog.cerbero.io/feed
 https://addisoncrump.info/rss.xml
-https://blog.rehack.xyz/feeds/posts/default
 https://www.techanarchy.net/rss
 https://blog.kellybrazil.com/feed
 https://control-plane.io/posts/index.xml
@@ -218,14 +210,11 @@ https://yingtongli.me/blog/feed.xml
 https://blog.jonsdocs.org.uk/rss
 https://zeltser.com/feed
 https://blog.ethereum.org/en/feed.xml
-https://code-white.com/index.xml
 https://googleprojectzero.blogspot.com/feeds/posts/default
 https://windows-internals.com/feed
 https://redplait.blogspot.com/feeds/posts/default
 https://www.honeynet.org/feed
-https://labs.watchtowr.com/rss
 https://www.elttam.com/feed.xml
-https://starlabs.sg/index.xml
 https://neilmadden.blog/feed
 https://www.douglas.stebila.ca/blog/feed/rss-2.0.xml
 https://securitylabs.datadoghq.com/rss/feed.xml
@@ -240,9 +229,7 @@ https://sansec.io/atom.xml
 https://riversecurity.eu/feed
 https://www.cyberis.com/blog/feed.rss
 https://www.securifera.com/feed
-https://labs.cognisys.group/feed.xml
 https://fuzzinglabs.com/feed
-https://www.antitree.com/index.xml
 https://g3tsyst3m.github.io/feed.xml
 https://ricardojoserf.github.io/feed.xml
 https://www.hackingbutlegal.com/feed
@@ -263,7 +250,6 @@ https://lockboxx.blogspot.com/feeds/posts/default
 https://www.between-two-firewalls.com/rss
 https://rioasmara.com/feed
 https://fr.sentinelone.com/labs/feed
-https://www.infosecworrier.dk//feed.xml
 https://payatu.com/feed
 https://www.hackercoolmagazine.com/feed
 https://pulse.latio.tech/feed
@@ -290,7 +276,6 @@ https://dfir.ch/index.xml
 https://www.dfirnotes.net/feed.xml
 https://k3xec.com/index.xml
 https://captmeelo.com/feed.xml
-https://whiteknightlabs.com/feed
 https://blog.huli.tw/atom-ch.xml
 https://lorexxar.cn/atom.xml
 https://blog.tribesmanjohn.au/feed
@@ -329,8 +314,4 @@ https://lauren.vortex.com/feed
 https://news.drweb.com/rss/get?c=5&lng=en
 https://tenable.com/feed/news
 https://www.threatdown.com/feed
-http://wololo.net/feed
 https://sideofburritos.com/index.xml
-https://taosecurity.blogspot.com/feeds/posts/default?alt=rss
-https://blog.jgc.org/feeds/posts/default?alt=rss
-
