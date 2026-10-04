@@ -67,17 +67,14 @@ https://blog.benjojo.co.uk/rss.xml
 https://rb.ax/index.xml
 https://twostopbits.com/rss
 https://hello-fri-end.github.io/feeds/all.atom.xml
-https://dbushell.com/rss.xml
 https://potsandpansbyccg.com/feed/atom/
 https://jamesmccaffreyblog.com/feed/
-https://sebsite.pw/feed.xml
 http://blog.eterm.uk/feed.xml
 http://blog.emilianbold.ro/atom.xml
 http://churchofbsd.blogspot.com/feeds/posts/default
 http://flagrantsystemerror.com/rss.xml
 http://goodyduru.com/index.xml
 http://marcosh.github.io/feed.xml
-http://modern-c.blogspot.com/atom.xml
 http://pascal.hansotten.com/feed/
 http://patg.net/feed.xml
 http://sebmestre.blogspot.com/atom.xml
@@ -102,7 +99,6 @@ https://alexjreid.dev/index.xml
 https://alexlitzenberger.com/blog/rss.xml
 https://alexschapiro.com/feed.xml
 https://amalchandran.xyz/index.xml
-https://anagogistis.com/index.xml
 https://anuragbhatia.com/index.xml
 https://armaangomes.com/rss.xml
 https://arthur.pizza/index.xml
@@ -288,7 +284,6 @@ https://www.dogesec.com/feed.xml
 https://hysler.net/index.xml
 https://www.infernux.no/feed.xml
 https://mcndt.dev/rss.xml
-https://raphting.dev/index.xml
 https://navendu.me/index.xml
 https://blog.uncooperative.org/feed.xml
 https://tantosec.com/blog/index.xml
