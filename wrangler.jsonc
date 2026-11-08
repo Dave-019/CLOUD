@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "rectifier",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "routes": [
+    {
+      "pattern": "feed.roma.co.ke",
+      "custom_domain": true
+    }
+  ],
+  "triggers": {
+    "crons": ["0 */8 * * *"]
+  },
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "FEED_CACHE",
+      "id": "3b3626c1c47f4d8aa52e6ea97793ef74"
+    }
+  ],
+  "vars": {
+    "USER_AGENT": "RectifierBot/1.0 (+https://feed.roma.co.ke)",
+    "RELEVANT_DAYS": "1",
+    "MAX_CONCURRENCY": "20"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

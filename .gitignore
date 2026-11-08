@@ -1,3 +1,9 @@
+# Node / Wrangler
+node_modules/
+.wrangler/
+.dev.vars
+dist/
+
 # Python
 __pycache__/
 *.py[cod]

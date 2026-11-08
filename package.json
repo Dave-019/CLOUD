@@ -1,0 +1,17 @@
+{
+  "name": "rectifier-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "trigger": "wrangler dev --test-scheduled"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261104.1",
+    "fast-xml-parser": "^5.2.5",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.158.0"
+  }
+}
